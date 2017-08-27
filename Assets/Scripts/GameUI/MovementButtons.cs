@@ -25,6 +25,22 @@ public class MovementButtons : MonoBehaviour {
         Move(MovementDirection.S);
     }
 
+    public void GrabObject()
+    {
+        if (SelectionProperties.GetSelectedObject().IsType<Drone>())
+        {
+            ((Drone)SelectionProperties.GetSelectedObject()).GrabObject();
+        }
+    }
+
+    public void ReleaseObject()
+    {
+        if (SelectionProperties.GetSelectedObject().IsType<Drone>())
+        {
+            ((Drone)SelectionProperties.GetSelectedObject()).ReleaseObject();
+        }
+    }
+
     private void Move(MovementDirection direction)
     {
         if (SelectionProperties.GetSelectedObject().IsType<Unit>())

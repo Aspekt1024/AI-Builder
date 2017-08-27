@@ -37,6 +37,14 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
         objectHoldTransform = holdTransform;
     }
     
+    public bool GrabObject(IGrabbable obj)
+    {
+        state = State.HoldingObject;
+        grabbedObject = obj;
+        obj.PickedUp(this);
+        return true;
+    }
+
     public bool GrabObjectAtPosition(Vector3 position)
     {
         if (state == State.HoldingObject) return false;
@@ -57,12 +65,19 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
             if (obj.IsType<Collectible>())
             {
                 grabbedObject = (IGrabbable)obj;
-                ((IGrabbable)obj).PickedUp();
+                ((IGrabbable)obj).PickedUp(this);
                 state = State.HoldingObject;
                 return true;
             }
         }
         return false;
+    }
+
+    public bool DetachGrabbedObject()
+    {
+        state = State.None;
+        grabbedObject = null;
+        return true;
     }
 
     public void ReleaseObjectToPosition(Vector3 position)
@@ -79,7 +94,7 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
 
     public Collectible GetHeldCollectible()
     {
-        if (grabbedObject.GetType().Equals(typeof(Collectible)))
+        if (grabbedObject.GetType().Equals(typeof(Collectible)) || grabbedObject.GetType().IsSubclassOf(typeof(Collectible)))
             return (Collectible)grabbedObject;
 
         return null;

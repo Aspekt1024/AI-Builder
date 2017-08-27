@@ -30,4 +30,29 @@ public sealed class ResourceCube : Collectible {
                 break;
         }
 	}
+
+    public bool UseEnergy(float energyUse)
+    {
+        if (energyRemaining < energyUse) return false;
+        energyRemaining -= energyUse;
+        return true;
+    }
+
+    protected override void OnPlaced()
+    {
+        RaycastHit hit = new RaycastHit();
+        Ray ray = new Ray()
+        {
+            origin = transform.position + Vector3.up,
+            direction = Vector3.down
+        };
+        LayerMask layers = 1 << LayerMask.NameToLayer("Building");
+        if (Physics.Raycast(ray, out hit, 10f, layers))
+        {
+            if (hit.collider.gameObject.GetComponent<PowerPad>())
+            {
+                hit.collider.gameObject.GetComponent<PowerPad>().TakeResource(this);
+            }
+        }
+    }
 }

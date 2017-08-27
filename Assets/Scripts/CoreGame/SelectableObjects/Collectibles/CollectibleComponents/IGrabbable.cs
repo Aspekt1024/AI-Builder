@@ -4,8 +4,9 @@ using UnityEngine;
 
 public interface IGrabbable {
 
-    void PickedUp();
+    void PickedUp(IGrabber grabber);
     void PutDown();
     void Consumed();
     void SetPosition(Vector3 position);
+    void RotateObject(Vector3 eulerRotation);
 }
