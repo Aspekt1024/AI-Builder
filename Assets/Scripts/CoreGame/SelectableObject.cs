@@ -4,17 +4,13 @@ using UnityEngine;
 
 public class SelectableObject : MonoBehaviour {
 
+    protected float selectionSize = 34.4f;
     protected Rigidbody body;
 
-	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
         GetComponents();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-
-    }
 
     protected virtual void GetComponents()
     {
@@ -25,4 +21,6 @@ public class SelectableObject : MonoBehaviour {
     {
         return GetType().Equals(typeof(T)) || GetType().IsSubclassOf(typeof(T));
     }
+
+    public float GetSelectionSize() { return selectionSize; }
 }
