@@ -17,7 +17,7 @@ public sealed class Drone : Unit {
     #region lifecycle
     private void Start()
     {
-        Speed = 5f;
+        Speed = 10f;
         Health = 1;
         MaxHealth = 1;
         GetComponents();
@@ -63,13 +63,12 @@ public sealed class Drone : Unit {
     {
         if (grabber.IsHoldingObject())
         {
-            grabber.ReleaseObjectToPosition(transform.position + transform.forward * GameConstants.GridSpacing);
-            return true;
+            if (grabber.ReleaseObjectToPosition(transform.position + transform.forward * GameConstants.GridSpacing))
+            {
+                return true;
+            }
         }
-        else
-        {
-            return false;
-        }
+        return false;
     }
 
     public override bool Move(MoveComponent.MovementDirection direction)

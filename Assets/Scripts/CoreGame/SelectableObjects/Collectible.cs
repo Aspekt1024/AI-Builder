@@ -49,5 +49,13 @@ public class Collectible : SelectableObject, IGrabbable {
         transform.Rotate(eulerRotation);
     }
 
+    public virtual bool CheckForValidDrop(Vector3 position)
+    {
+        LayerMask layers = 1 << Layers.TERRAIN;
+        GameObject obj = GridRaycaster.GetObject(position, layers);
+        if (obj == null) return false;
+        return true;
+    }
+
     protected virtual void OnPlaced() { }
 }

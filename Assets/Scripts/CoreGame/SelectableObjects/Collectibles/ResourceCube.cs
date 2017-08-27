@@ -61,4 +61,23 @@ public sealed class ResourceCube : Collectible {
             }
         }
     }
+
+    public override bool CheckForValidDrop(Vector3 position)
+    {
+        LayerMask layers = 1 << Layers.BUILDING | 1 << Layers.TERRAIN;
+        GameObject obj = GridRaycaster.GetObject(position, layers);
+        if (obj == null) return false;
+        if (obj.GetComponent<Building>())
+        {
+            if (obj.GetComponent<Building>().IsType<PowerPad>())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 }

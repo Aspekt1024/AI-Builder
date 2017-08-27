@@ -9,7 +9,7 @@ public class MoveComponent : MonoBehaviour
         None, N, S, E, W, NE, SE, SW, NW
     }
     
-    private const float turnSpeed = 360f;    // degrees per sec
+    private const float turnSpeed = 720f;    // degrees per sec
     private Coroutine moveRoutine;
 
     public void StopMoving()

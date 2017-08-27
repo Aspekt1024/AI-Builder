@@ -80,12 +80,20 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
         return true;
     }
 
-    public void ReleaseObjectToPosition(Vector3 position)
+    public bool ReleaseObjectToPosition(Vector3 position)
     {
-        state = State.None;
-        grabbedObject.SetPosition(position);
-        grabbedObject.PutDown();
-        grabbedObject = null;
+        if (grabbedObject.CheckForValidDrop(position))
+        {
+            state = State.None;
+            grabbedObject.SetPosition(position);
+            grabbedObject.PutDown();
+            grabbedObject = null;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     public void RotateHeldObject(Vector3 eulerRotation)
@@ -101,6 +109,7 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
 
         return null;
     }
+
 
     public bool IsHoldingObject() { return state == State.HoldingObject; }
 }
