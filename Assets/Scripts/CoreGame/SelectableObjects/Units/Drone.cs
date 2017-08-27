@@ -10,6 +10,8 @@ public sealed class Drone : Unit {
     }
     private States state;
 
+    private ParticleSystem explosionPS;
+    private GameObject droneBody;
     private GrabberComponent grabber;
 
     #region lifecycle
@@ -35,6 +37,20 @@ public sealed class Drone : Unit {
                 break;
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "ResourceCube")
+        {
+            if (grabber.IsHoldingObject())
+            {
+                if (other.gameObject == grabber.GetHeldCollectible().gameObject) return;
+            }
+
+            Explode();
+            other.GetComponent<ResourceCube>().Explode();
+        }
+    }
     #endregion
 
     public bool GrabObject()
@@ -58,7 +74,7 @@ public sealed class Drone : Unit {
 
     public override bool Move(MoveComponent.MovementDirection direction)
     {
-        if (state == States.Moving) return false;
+        if (state == States.Moving || state == States.Disabled) return false;
 
         if (base.Move(direction))
         {
@@ -93,6 +109,23 @@ public sealed class Drone : Unit {
             {
                 grabber.SetObjectHoldPosition(tf);
             }
+            else if (tf.name == "Body")
+            {
+                droneBody = tf.gameObject;
+            }
+            else if (tf.name == "Particle System")
+            {
+                explosionPS = gameObject.GetComponentInChildren<ParticleSystem>();
+                explosionPS.Stop();
+            }
         }
+    }
+
+    private void Explode()
+    {
+        state = States.Disabled;
+        StopMoving();
+        droneBody.SetActive(false);
+        explosionPS.Play();
     }
 }

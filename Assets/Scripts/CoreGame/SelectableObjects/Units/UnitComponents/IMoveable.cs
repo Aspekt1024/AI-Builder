@@ -6,4 +6,5 @@ public interface IMoveable {
 
     bool Move(MoveComponent.MovementDirection direction);
     void FinishedMoving();
+    void StopMoving();
 }

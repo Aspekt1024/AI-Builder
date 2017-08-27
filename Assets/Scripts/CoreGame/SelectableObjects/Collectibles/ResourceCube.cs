@@ -31,6 +31,12 @@ public sealed class ResourceCube : Collectible {
         }
 	}
 
+    public void Explode()
+    {
+        pointLight.color = Color.yellow;
+        pointLight.intensity = 150f;
+    }
+
     public bool UseEnergy(float energyUse)
     {
         if (energyRemaining < energyUse) return false;

@@ -10,6 +10,15 @@ public class MoveComponent : MonoBehaviour
     }
     
     private const float turnSpeed = 360f;    // degrees per sec
+    private Coroutine moveRoutine;
+
+    public void StopMoving()
+    {
+        if (moveRoutine != null)
+        {
+            StopCoroutine(moveRoutine);
+        }
+    }
 
     public bool Move(Unit unit, MovementDirection direction)
     {
@@ -33,15 +42,15 @@ public class MoveComponent : MonoBehaviour
                 return false;
         }
         
-        LayerMask layers = 1 << Layers.BUILDING | 1 << Layers.COLLECTIBLE | 1 << Layers.WALL | 1 << Layers.UNIT;
+        LayerMask layers = 1 << Layers.BUILDING | 1 << Layers.WALL | 1 << Layers.UNIT;
         if (GridRaycaster.CheckForObject(unit.transform.position + distance, layers))
         {
-            StartCoroutine(MoveFailRoutine(unit, distance));
+            moveRoutine = StartCoroutine(MoveFailRoutine(unit, distance));
             return false;
         }
         else
         {
-            StartCoroutine(MoveRoutine(unit, distance));
+            moveRoutine = StartCoroutine(MoveRoutine(unit, distance));
             return true;
         }
     }

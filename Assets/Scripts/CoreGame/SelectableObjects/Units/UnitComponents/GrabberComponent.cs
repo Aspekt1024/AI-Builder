@@ -85,6 +85,7 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
         state = State.None;
         grabbedObject.SetPosition(position);
         grabbedObject.PutDown();
+        grabbedObject = null;
     }
 
     public void RotateHeldObject(Vector3 eulerRotation)
@@ -94,6 +95,7 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
 
     public Collectible GetHeldCollectible()
     {
+        if (grabbedObject == null) return null;
         if (grabbedObject.GetType().Equals(typeof(Collectible)) || grabbedObject.GetType().IsSubclassOf(typeof(Collectible)))
             return (Collectible)grabbedObject;
 

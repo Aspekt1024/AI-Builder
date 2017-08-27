@@ -42,5 +42,10 @@ public class Unit : SelectableObject, IMoveable {
         return moveComponent.Move(this, direction);
     }
 
+    public void StopMoving()
+    {
+        moveComponent.StopMoving();
+    }
+
     public virtual void FinishedMoving() { }
 }
