@@ -27,25 +27,27 @@ public class MovementButtons : MonoBehaviour {
 
     public void GrabObject()
     {
-        if (SelectionProperties.GetSelectedObject().IsType<Drone>())
+        if (ObjectSelector.GetSelectedObject().IsType<Drone>())
         {
-            ((Drone)SelectionProperties.GetSelectedObject()).GrabObject();
+            ((Drone)ObjectSelector.GetSelectedObject()).GrabObject();
         }
     }
 
     public void ReleaseObject()
     {
-        if (SelectionProperties.GetSelectedObject().IsType<Drone>())
+        if (ObjectSelector.GetSelectedObject().IsType<Drone>())
         {
-            ((Drone)SelectionProperties.GetSelectedObject()).ReleaseObject();
+            ((Drone)ObjectSelector.GetSelectedObject()).ReleaseObject();
         }
     }
 
     private void Move(MovementDirection direction)
     {
-        if (SelectionProperties.GetSelectedObject().IsType<Unit>())
+        if (ObjectSelector.GetSelectedObject() == null) return;
+
+        if (ObjectSelector.GetSelectedObject().IsType<Unit>())
         {
-            ((Unit)SelectionProperties.GetSelectedObject()).Move(direction);
+            ((Unit)ObjectSelector.GetSelectedObject()).Move(direction);
         }
     }
 }

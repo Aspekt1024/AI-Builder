@@ -9,4 +9,5 @@ public interface IGrabbable {
     void Consumed();
     void SetPosition(Vector3 position);
     void RotateObject(Vector3 eulerRotation);
+    bool CheckForValidDrop(Vector3 position);
 }
