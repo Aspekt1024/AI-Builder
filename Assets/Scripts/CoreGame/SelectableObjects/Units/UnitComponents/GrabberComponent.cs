@@ -13,6 +13,13 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
     private Transform objectHoldTransform;
     private IGrabbable grabbedObject;
 
+    private void Update()
+    {
+        if (state == State.HoldingObject)
+        {
+            grabbedObject.SetPosition(objectHoldTransform.position);
+        }
+    }
 
     public void SetObjectHoldPosition(Transform holdTransform)
     {
@@ -22,12 +29,14 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
     
     public void GrabObject(IGrabbable grabbableObject)
     {
-        grabbableObject.PickedUp(this);
+        state = State.HoldingObject;
+        grabbableObject.PickedUp();
         grabbedObject = grabbableObject;
     }
 
     public void ReleaseObject()
     {
+        state = State.None;
         grabbedObject.PutDown();
     }
 

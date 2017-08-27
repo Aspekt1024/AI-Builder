@@ -5,13 +5,13 @@ using UnityEngine;
 public sealed class ResourceCube : Collectible {
     
     private Light pointLight;
+    private float energyRemaining;
 
-	// Use this for initialization
 	void Start () {
         pointLight = GetComponentInChildren<Light>();
+        energyRemaining = 100f;
 	}
 	
-	// Update is called once per frame
 	private void Update ()
     {
 		switch(grabState)
@@ -21,7 +21,6 @@ public sealed class ResourceCube : Collectible {
                 break;
             case GrabState.PickedUp:
                 pointLight.intensity = 100f;
-                transform.position = grabber.GetObjectHoldPosition();
                 break;
             case GrabState.PutDown:
                 pointLight.intensity = 0.6f;

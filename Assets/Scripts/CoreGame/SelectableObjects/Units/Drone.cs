@@ -55,7 +55,7 @@ public sealed class Drone : Unit {
         Collectible collectibleObject = other.GetComponent<Collectible>();
         if (collectibleObject != null)
         {
-            collectibleObject.PickedUp(grabber);
+            grabber.GrabObject(collectibleObject);
         }
     }
     #endregion

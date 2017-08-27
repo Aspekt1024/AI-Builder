@@ -9,34 +9,15 @@ public class Collectible : SelectableObject, IGrabbable {
         None, PickedUp, PutDown, Consumed
     }
     protected GrabState grabState;
-    protected IGrabber grabber;
 
     private void Start ()
     {
         GetComponents();
     }
-
-    private void Update()
-    {
-        switch (grabState)
-        {
-            case GrabState.None:
-                break;
-            case GrabState.PickedUp:
-                transform.position = grabber.GetObjectHoldPosition();
-                break;
-            case GrabState.PutDown:
-                break;
-            case GrabState.Consumed:
-                // TODO destroy
-                break;
-        }
-    }
-
-    public void PickedUp(IGrabber grabbedBy)
+    
+    public void PickedUp()
     {
         grabState = GrabState.PickedUp;
-        grabber = grabbedBy;
     }
 
     public void PutDown()
@@ -47,5 +28,10 @@ public class Collectible : SelectableObject, IGrabbable {
     public void Consumed()
     {
         grabState = GrabState.Consumed;
+    }
+
+    public void SetPosition(Vector3 position)
+    {
+        transform.position = position;
     }
 }
