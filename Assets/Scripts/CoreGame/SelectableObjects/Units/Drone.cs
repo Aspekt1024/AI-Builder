@@ -21,20 +21,6 @@ public sealed class Drone : Unit {
         GetComponents();
     }
 
-    protected sealed override void GetComponents()
-    {
-        base.GetComponents();
-        grabber = gameObject.AddComponent<GrabberComponent>();
-
-        foreach(Transform tf in transform)
-        {
-            if (tf.name == "HeldObjectPosition")
-            {
-                grabber.SetObjectHoldPosition(tf);
-            }
-        }
-    }
-
     private void Update()
     {
         switch (state)
@@ -49,16 +35,26 @@ public sealed class Drone : Unit {
                 break;
         }
     }
+    #endregion
 
-    private void OnTriggerEnter(Collider other)
+    public bool GrabObject()
     {
-        Collectible collectibleObject = other.GetComponent<Collectible>();
-        if (collectibleObject != null)
+        if (state == States.Moving || state == States.Disabled) return false;
+        return grabber.GrabObjectAtPosition(transform.position + transform.forward * GameConstants.GridSpacing + Vector3.up * 2f);
+    }
+
+    public bool ReleaseObject()
+    {
+        if (grabber.IsHoldingObject())
         {
-            grabber.GrabObject(collectibleObject);
+            grabber.ReleaseObjectToPosition(transform.position + transform.forward * GameConstants.GridSpacing);
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
-    #endregion
 
     public override bool Move(MoveComponent.MovementDirection direction)
     {
@@ -85,5 +81,18 @@ public sealed class Drone : Unit {
         // TODO handle logic for state transitions
         state = newState;
     }
+    
+    protected sealed override void GetComponents()
+    {
+        base.GetComponents();
+        grabber = gameObject.AddComponent<GrabberComponent>();
 
+        foreach (Transform tf in transform)
+        {
+            if (tf.name == "HeldObjectPosition")
+            {
+                grabber.SetObjectHoldPosition(tf);
+            }
+        }
+    }
 }

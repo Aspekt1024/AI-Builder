@@ -15,33 +15,75 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
 
     private void Update()
     {
-        if (state == State.HoldingObject)
+        switch(state)
         {
-            grabbedObject.SetPosition(objectHoldTransform.position);
+            case State.None:
+                break;
+            case State.HoldingObject:
+                grabbedObject.SetPosition(objectHoldTransform.position);
+                break;
+            case State.GrabbingObject:
+                state = State.HoldingObject;
+                break;
+            case State.DroppingObject:
+                state = State.None;
+                break;
+
         }
     }
 
     public void SetObjectHoldPosition(Transform holdTransform)
     {
-        Debug.Log(holdTransform);
         objectHoldTransform = holdTransform;
     }
     
-    public void GrabObject(IGrabbable grabbableObject)
+    public bool GrabObjectAtPosition(Vector3 position)
     {
-        state = State.HoldingObject;
-        grabbableObject.PickedUp();
-        grabbedObject = grabbableObject;
+        if (state == State.HoldingObject) return false;
+
+        Ray ray = new Ray()
+        {
+            origin = position,
+            direction = Vector3.down
+        };
+        RaycastHit hit = new RaycastHit();
+        LayerMask layers = 1 << LayerMask.NameToLayer("Collectible");
+
+        if (Physics.Raycast(ray, out hit, 10f, layers))
+        {
+            SelectableObject obj = hit.collider.gameObject.GetComponent<SelectableObject>();
+            if (obj == null) return false;
+
+            if (obj.IsType<Collectible>())
+            {
+                grabbedObject = (IGrabbable)obj;
+                ((IGrabbable)obj).PickedUp();
+                state = State.HoldingObject;
+                return true;
+            }
+        }
+        return false;
     }
 
-    public void ReleaseObject()
+    public void ReleaseObjectToPosition(Vector3 position)
     {
         state = State.None;
+        grabbedObject.SetPosition(position);
         grabbedObject.PutDown();
     }
 
-    public Vector3 GetObjectHoldPosition()
+    public void RotateHeldObject(Vector3 eulerRotation)
     {
-        return objectHoldTransform.position;
+        grabbedObject.RotateObject(eulerRotation);
     }
+
+    public Collectible GetHeldCollectible()
+    {
+        if (grabbedObject.GetType().Equals(typeof(Collectible)))
+            return (Collectible)grabbedObject;
+
+        return null;
+    }
+
+    public bool IsHoldingObject() { return state == State.HoldingObject; }
 }

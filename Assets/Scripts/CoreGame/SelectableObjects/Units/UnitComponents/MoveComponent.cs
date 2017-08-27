@@ -9,7 +9,6 @@ public class MoveComponent : MonoBehaviour
         None, N, S, E, W, NE, SE, SW, NW
     }
     
-    private const float stepDistance = 2f;
     private const float turnSpeed = 360f;    // degrees per sec
 
     public bool Move(Unit unit, MovementDirection direction)
@@ -18,16 +17,16 @@ public class MoveComponent : MonoBehaviour
         switch (direction)
         {
             case MovementDirection.N:
-                distance = Vector3.forward * stepDistance;
+                distance = Vector3.forward * GameConstants.GridSpacing;
                 break;
             case MovementDirection.S:
-                distance = Vector3.back * stepDistance;
+                distance = Vector3.back * GameConstants.GridSpacing;
                 break;
             case MovementDirection.E:
-                distance = Vector3.right * stepDistance;
+                distance = Vector3.right * GameConstants.GridSpacing;
                 break;
             case MovementDirection.W:
-                distance = Vector3.left * stepDistance;
+                distance = Vector3.left * GameConstants.GridSpacing;
                 break;
             default:
                 Debug.LogWarning("Diagonal directions not implemented");
