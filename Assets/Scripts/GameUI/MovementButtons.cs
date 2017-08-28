@@ -5,24 +5,24 @@ using Direction = MoveComponent.Direction;
 
 public class MovementButtons : MonoBehaviour {
 
-    public void LeftButton()
+    public void LookLeft()
     {
-        Move(Direction.W);
+        LookTowards(Direction.W);
     }
 
-    public void RightButton()
+    public void LookRight()
     {
-        Move(Direction.E);
+        LookTowards(Direction.E);
     }
 
-    public void UpButton()
+    public void LookUp()
     {
-        Move(Direction.N);
+        LookTowards(Direction.N);
     }
 
-    public void DownButton()
+    public void LookDown()
     {
-        Move(Direction.S);
+        LookTowards(Direction.S);
     }
 
     public void GrabObject()
@@ -41,13 +41,32 @@ public class MovementButtons : MonoBehaviour {
         }
     }
 
-    private void Move(Direction direction)
+    private void LookTowards(Direction direction)
     {
         if (ObjectSelector.GetSelectedObject() == null) return;
 
-        if (ObjectSelector.GetSelectedObject().IsType<Unit>())
+        Debug.Log(ObjectSelector.GetSelectedObject());
+        if (ObjectSelector.GetSelectedObject().IsType<IMoveable>())
         {
-            ((Unit)ObjectSelector.GetSelectedObject()).MoveForward();
+            ((IMoveable)ObjectSelector.GetSelectedObject()).TurnTowards(direction);
+        }
+    }
+
+    public void MoveForward()
+    {
+        if (ObjectSelector.GetSelectedObject() == null) return;
+        if (ObjectSelector.GetSelectedObject().IsType<IMoveable>())
+        {
+            ((IMoveable)ObjectSelector.GetSelectedObject()).MoveForward();
+        }
+    }
+
+    public void MoveBackward()
+    {
+        if (ObjectSelector.GetSelectedObject() == null) return;
+        if (ObjectSelector.GetSelectedObject().IsType<IMoveable>())
+        {
+            ((IMoveable)ObjectSelector.GetSelectedObject()).MoveBackward();
         }
     }
 }
