@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IMoveable {
+using Direction = MoveComponent.Direction;
 
-    bool Move(MoveComponent.MovementDirection direction);
-    void FinishedMoving();
+public interface IMoveable : IUnitAttribute {
+
+    bool MoveForward();
+    bool MoveBackward();
+    bool TurnTowards(Direction direction);
     void StopMoving();
+    void FinishedMoving();
 }

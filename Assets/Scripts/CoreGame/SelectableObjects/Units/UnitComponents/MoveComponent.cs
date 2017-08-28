@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveComponent : MonoBehaviour
+public class MoveComponent : MonoBehaviour, IMovement
 {
-    public enum MovementDirection
+    public enum Direction
     {
-        None, N, S, E, W, NE, SE, SW, NW
+        None,
+        N, S, E, W,
+        NE, SE, SW, NW
     }
     
     private const float turnSpeed = 720f;    // degrees per sec
     private Coroutine moveRoutine;
+    private Vector3 originalPosition;
 
-    public void StopMoving()
+    public void StopMovement()
     {
         if (moveRoutine != null)
         {
@@ -20,71 +23,69 @@ public class MoveComponent : MonoBehaviour
         }
     }
 
-    public bool Move(Unit unit, MovementDirection direction)
+    public bool TurnTowards(Unit unit, Direction direction)
     {
-        Vector3 distance = new Vector3();
-        switch (direction)
+        switch(direction)
         {
-            case MovementDirection.N:
-                distance = Vector3.forward * GameConstants.GridSpacing;
+            case Direction.None:
+                return true;
+            case Direction.N:
+                StartCoroutine(TurnTowardsPoint(unit.transform, unit.transform.position + Vector3.forward));
                 break;
-            case MovementDirection.S:
-                distance = Vector3.back * GameConstants.GridSpacing;
+            case Direction.S:
+                StartCoroutine(TurnTowardsPoint(unit.transform, unit.transform.position + Vector3.back));
                 break;
-            case MovementDirection.E:
-                distance = Vector3.right * GameConstants.GridSpacing;
+            case Direction.E:
+                StartCoroutine(TurnTowardsPoint(unit.transform, unit.transform.position + Vector3.right));
                 break;
-            case MovementDirection.W:
-                distance = Vector3.left * GameConstants.GridSpacing;
+            case Direction.W:
+                StartCoroutine(TurnTowardsPoint(unit.transform, unit.transform.position + Vector3.left));
                 break;
             default:
                 Debug.LogWarning("Diagonal directions not implemented");
                 return false;
         }
-        
-        if (GridRaycaster.CheckForObject(unit.transform.position + distance, Layers.SELECTABLE_OBJECT))
-        {
-            moveRoutine = StartCoroutine(MoveFailRoutine(unit, distance));
-            return false;
-        }
-        else
-        {
-            moveRoutine = StartCoroutine(MoveRoutine(unit, distance));
-            return true;
-        }
+        return true;
     }
 
-    private IEnumerator MoveFailRoutine(Unit unit, Vector3 distance)
+    public bool MoveForward(Unit unit, int numSpaces = 1)
     {
-        Vector3 direction = distance.normalized;
+        Vector3 distance = transform.forward * numSpaces * GameConstants.GridSpacing;
+        moveRoutine = StartCoroutine(MoveRoutine(unit, distance));
+        return true;
+    }
 
-        float distToMove = GameConstants.GridSpacing / 4f;
-        Vector3 startPos = unit.transform.position;
-        Vector3 endPos = startPos + direction * distToMove;
+    public bool MoveBackward(Unit unit, int numSpaces = 1)
+    {
+        Vector3 distance = -transform.forward * numSpaces * GameConstants.GridSpacing;
+        moveRoutine = StartCoroutine(MoveRoutine(unit, distance));
+        return true;
+    }
 
-        yield return TurnTowardsPoint(unit.transform, endPos);
+    public void ReverseMovement(Unit unit)
+    {
+        if (moveRoutine != null) StopCoroutine(moveRoutine);
+        moveRoutine = StartCoroutine(ReverseMovementRoutine(unit));
+    }
 
-        while (Vector3.Distance(unit.transform.position, endPos) > 0.1f)
+    private IEnumerator ReverseMovementRoutine(Unit unit)
+    {
+        Vector3 direction = (originalPosition - unit.transform.position).normalized;
+        while (Vector3.Distance(unit.transform.position, originalPosition) > 0.1f)
         {
             unit.transform.position += direction * Time.deltaTime * unit.Speed;
             yield return null;
         }
-
-        while (Vector3.Distance(unit.transform.position, startPos) > 0.1f)
-        {
-            unit.transform.position -= direction * Time.deltaTime * unit.Speed;
-            yield return null;
-        }
-        unit.transform.position = startPos;
+        unit.transform.position = originalPosition;
         unit.FinishedMoving();
     }
 
     private IEnumerator MoveRoutine(Unit unit, Vector3 distance)
     {
         Vector3 startPos = unit.transform.position;
-        Vector3 endPos = startPos += distance;
+        Vector3 endPos = startPos + distance;
 
-        yield return TurnTowardsPoint(unit.transform, endPos);
+        originalPosition = startPos;
 
         while (Vector3.Distance(unit.transform.position, endPos) > 0.1f)
         {

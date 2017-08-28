@@ -72,11 +72,23 @@ public sealed class Drone : Unit, ICanGrab {
         return false;
     }
 
-    public override bool Move(MoveComponent.MovementDirection direction)
+    public override bool MoveForward()
     {
         if (state == States.Moving || state == States.Disabled) return false;
 
-        if (base.Move(direction))
+        if (base.MoveForward())
+        {
+            state = States.Moving;
+            return true;
+        }
+        return false;
+    }
+
+    public override bool MoveBackward()
+    {
+        if (state == States.Moving || state == States.Disabled) return false;
+
+        if (base.MoveBackward())
         {
             state = States.Moving;
             return true;
@@ -118,6 +130,29 @@ public sealed class Drone : Unit, ICanGrab {
                 explosionPS = gameObject.GetComponentInChildren<ParticleSystem>();
                 explosionPS.Stop();
             }
+        }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (state != States.Moving) return;
+        switch (Layers.GetMaskFromIndex(collision.collider.gameObject.layer))
+        {
+            case Layers.WALL:
+                moveComponent.ReverseMovement(this);
+                break;
+            case Layers.BUILDING:
+                moveComponent.ReverseMovement(this);
+                break;
+            case Layers.COLLECTIBLE:
+                if (collision.collider.GetComponent<ResourceCube>() != null)
+                {
+                    Explode();
+                }
+                moveComponent.ReverseMovement(this);
+                break;
+            default:
+                break;
         }
     }
 

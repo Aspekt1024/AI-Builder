@@ -1,28 +1,28 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using MovementDirection = MoveComponent.MovementDirection;
+using Direction = MoveComponent.Direction;
 
 public class MovementButtons : MonoBehaviour {
 
     public void LeftButton()
     {
-        Move(MovementDirection.W);
+        Move(Direction.W);
     }
 
     public void RightButton()
     {
-        Move(MovementDirection.E);
+        Move(Direction.E);
     }
 
     public void UpButton()
     {
-        Move(MovementDirection.N);
+        Move(Direction.N);
     }
 
     public void DownButton()
     {
-        Move(MovementDirection.S);
+        Move(Direction.S);
     }
 
     public void GrabObject()
@@ -41,13 +41,13 @@ public class MovementButtons : MonoBehaviour {
         }
     }
 
-    private void Move(MovementDirection direction)
+    private void Move(Direction direction)
     {
         if (ObjectSelector.GetSelectedObject() == null) return;
 
         if (ObjectSelector.GetSelectedObject().IsType<Unit>())
         {
-            ((Unit)ObjectSelector.GetSelectedObject()).Move(direction);
+            ((Unit)ObjectSelector.GetSelectedObject()).MoveForward();
         }
     }
 }

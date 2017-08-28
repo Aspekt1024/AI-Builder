@@ -24,7 +24,7 @@ public class Unit : SelectableObject, IMoveable {
     private int health;
     private int maxHealth;
 
-    private MoveComponent moveComponent;
+    protected MoveComponent moveComponent;
 
     private void Start ()
     {
@@ -37,14 +37,24 @@ public class Unit : SelectableObject, IMoveable {
         moveComponent = gameObject.AddComponent<MoveComponent>();
     }
 
-    public virtual bool Move(MoveComponent.MovementDirection direction)
+    public virtual bool MoveForward()
     {
-        return moveComponent.Move(this, direction);
+        return moveComponent.MoveForward(this);
+    }
+
+    public virtual bool MoveBackward()
+    {
+        return moveComponent.MoveBackward(this);
+    }
+
+    public virtual bool TurnTowards(MoveComponent.Direction direction)
+    {
+        return moveComponent.TurnTowards(this, direction);
     }
 
     public void StopMoving()
     {
-        moveComponent.StopMoving();
+        moveComponent.StopMovement();
     }
 
     public virtual void FinishedMoving() { }
