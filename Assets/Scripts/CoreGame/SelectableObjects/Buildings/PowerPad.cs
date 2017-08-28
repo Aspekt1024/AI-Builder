@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PowerPad : Building
+public class PowerPad : Building, IReceptor
 {
     private enum States
     {
@@ -10,12 +10,13 @@ public class PowerPad : Building
     }
     private States state;
 
-    private GrabberComponent grabber;
+    private IGrabbable grabbedObject;
+    private Transform receptorHoldPoint;
     
     private void Start()
     {
-        CreateGrabber();
         energyUsePerSecond = 0.1f;
+        SetReceptorPoint();
     }
     
     private void Update()
@@ -25,7 +26,7 @@ public class PowerPad : Building
             case States.None:
                 break;
             case States.Powered:
-                if (grabber.IsHoldingObject())
+                if (grabbedObject != null)
                 {
                     RotatePowerSource();
                     ConsumePowerSource();
@@ -42,44 +43,71 @@ public class PowerPad : Building
         }
     }
 
-    public void TakeResource(ResourceCube resourceCube)
+    public bool ReceiveObject(IGrabbable grabbableObject)
     {
-        grabber.GrabObject(resourceCube);
-        state = States.Powered;
+        if (InterfaceAnalyser.TypeMatch<ResourceCube>(grabbableObject))
+        {
+            grabbedObject = grabbableObject;
+            grabbedObject.PickedUp(this);
+            state = States.Powered;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
-    
+
+    public bool ReleaseObject()
+    {
+        if (grabbedObject == null)
+        {
+            return false;
+        }
+        else
+        {
+            grabbedObject = null;
+            return true;
+        }
+    }
+
+    public bool DetachGrabbedObject()
+    {
+        state = States.None;
+        grabbedObject = null;
+        return true;
+    }
+
     private void RotatePowerSource()
     {
         const float pitchSpeed = 100;
         const float yawSpeed = 200f;
-        grabber.RotateHeldObject(new Vector3(pitchSpeed, yawSpeed, 0f) * Time.deltaTime);
+        grabbedObject.SetPosition(receptorHoldPoint.position);
+        grabbedObject.RotateObject(new Vector3(pitchSpeed, yawSpeed, 0f) * Time.deltaTime);
     }
 
     private void ConsumePowerSource()
     {
-        Collectible heldCollectible = grabber.GetHeldCollectible();
-        if (heldCollectible == null)
+        if (grabbedObject == null)
         {
             state = States.None;
             return;
         }
 
-        if (heldCollectible.IsType<ResourceCube>())
+        if (grabbedObject.GetType().Equals(typeof(ResourceCube)))
         {
-            ((ResourceCube)heldCollectible).UseEnergy(energyUsePerSecond * Time.deltaTime);
+            ((ResourceCube)grabbedObject).UseEnergy(energyUsePerSecond * Time.deltaTime);
         }
 
     }
 
-    private void CreateGrabber()
+    public void SetReceptorPoint()
     {
-        grabber = gameObject.AddComponent<GrabberComponent>();
-
         foreach (Transform tf in transform)
         {
             if (tf.name == "HeldObjectPosition")
             {
-                grabber.SetObjectHoldPosition(tf);
+                receptorHoldPoint = tf;
             }
         }
     }

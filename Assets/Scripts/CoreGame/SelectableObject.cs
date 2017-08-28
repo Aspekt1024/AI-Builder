@@ -7,7 +7,7 @@ public class SelectableObject : MonoBehaviour {
     protected float selectionSize = 34.4f;
     protected Rigidbody body;
 
-	void Start ()
+	private void Start ()
     {
         GetComponents();
 	}

@@ -52,32 +52,31 @@ public sealed class ResourceCube : Collectible {
             origin = transform.position + Vector3.up,
             direction = Vector3.down
         };
-        LayerMask layers = 1 << LayerMask.NameToLayer("Building");
-        if (Physics.Raycast(ray, out hit, 10f, layers))
+
+        if (Physics.Raycast(ray, out hit, 10f, Layers.BUILDING))
         {
-            if (hit.collider.gameObject.GetComponent<PowerPad>())
-            {
-                hit.collider.gameObject.GetComponent<PowerPad>().TakeResource(this);
-            }
+            PowerPad pad = hit.collider.gameObject.GetComponent<PowerPad>();
+            if (pad == null) return;
+
+            pad.ReceiveObject(this);
         }
     }
 
     public override bool CheckForValidDrop(Vector3 position)
     {
-        LayerMask layers = 1 << Layers.BUILDING | 1 << Layers.TERRAIN;
+        LayerMask layers = Layers.BUILDING | Layers.TERRAIN;
         GameObject obj = GridRaycaster.GetObject(position, layers);
         if (obj == null) return false;
-        if (obj.GetComponent<Building>())
+
+        if (obj.GetComponent<Building>() == null)
         {
-            if (obj.GetComponent<Building>().IsType<PowerPad>())
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return true;
         }
-        return true;
+        else
+        {
+            PowerPad pad = obj.GetComponent<PowerPad>();
+            return pad != null;
+        }
+        
     }
 }

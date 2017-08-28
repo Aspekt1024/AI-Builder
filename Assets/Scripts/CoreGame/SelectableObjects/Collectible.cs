@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Collectible : SelectableObject, IGrabbable {
 
-    private IGrabber currentHolder;
+    private IHolder currentHolder;
 
     protected enum GrabState
     {
@@ -17,7 +17,7 @@ public class Collectible : SelectableObject, IGrabbable {
         GetComponents();
     }
     
-    public void PickedUp(IGrabber grabber)
+    public void PickedUp(IHolder grabber)
     {
         if (currentHolder != null)
         {
@@ -51,8 +51,7 @@ public class Collectible : SelectableObject, IGrabbable {
 
     public virtual bool CheckForValidDrop(Vector3 position)
     {
-        LayerMask layers = 1 << Layers.TERRAIN;
-        GameObject obj = GridRaycaster.GetObject(position, layers);
+        GameObject obj = GridRaycaster.GetObject(position, Layers.TERRAIN);
         if (obj == null) return false;
         return true;
     }

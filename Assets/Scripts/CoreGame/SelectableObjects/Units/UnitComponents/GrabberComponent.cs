@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class GrabberComponent : MonoBehaviour, IGrabber {
 
-    private enum State
+    private enum States
     {
         None, HoldingObject, GrabbingObject, DroppingObject
     }
-    private State state;
+    private States state;
 
     private Transform objectHoldTransform;
     private IGrabbable grabbedObject;
@@ -17,16 +17,16 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
     {
         switch(state)
         {
-            case State.None:
+            case States.None:
                 break;
-            case State.HoldingObject:
+            case States.HoldingObject:
                 grabbedObject.SetPosition(objectHoldTransform.position);
                 break;
-            case State.GrabbingObject:
-                state = State.HoldingObject;
+            case States.GrabbingObject:
+                state = States.HoldingObject;
                 break;
-            case State.DroppingObject:
-                state = State.None;
+            case States.DroppingObject:
+                state = States.None;
                 break;
 
         }
@@ -39,7 +39,7 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
     
     public bool GrabObject(IGrabbable obj)
     {
-        state = State.HoldingObject;
+        state = States.HoldingObject;
         grabbedObject = obj;
         obj.PickedUp(this);
         return true;
@@ -47,7 +47,7 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
 
     public bool GrabObjectAtPosition(Vector3 position)
     {
-        if (state == State.HoldingObject) return false;
+        if (state == States.HoldingObject) return false;
 
         Ray ray = new Ray()
         {
@@ -55,9 +55,8 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
             direction = Vector3.down
         };
         RaycastHit hit = new RaycastHit();
-        LayerMask layers = 1 << LayerMask.NameToLayer("Collectible");
 
-        if (Physics.Raycast(ray, out hit, 10f, layers))
+        if (Physics.Raycast(ray, out hit, 10f, Layers.COLLECTIBLE))
         {
             SelectableObject obj = hit.collider.gameObject.GetComponent<SelectableObject>();
             if (obj == null) return false;
@@ -66,7 +65,7 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
             {
                 grabbedObject = (IGrabbable)obj;
                 ((IGrabbable)obj).PickedUp(this);
-                state = State.HoldingObject;
+                state = States.HoldingObject;
                 return true;
             }
         }
@@ -75,7 +74,7 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
 
     public bool DetachGrabbedObject()
     {
-        state = State.None;
+        state = States.None;
         grabbedObject = null;
         return true;
     }
@@ -84,7 +83,7 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
     {
         if (grabbedObject.CheckForValidDrop(position))
         {
-            state = State.None;
+            state = States.None;
             grabbedObject.SetPosition(position);
             grabbedObject.PutDown();
             grabbedObject = null;
@@ -94,11 +93,6 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
         {
             return false;
         }
-    }
-
-    public void RotateHeldObject(Vector3 eulerRotation)
-    {
-        grabbedObject.RotateObject(eulerRotation);
     }
 
     public Collectible GetHeldCollectible()
@@ -111,5 +105,5 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
     }
 
 
-    public bool IsHoldingObject() { return state == State.HoldingObject; }
+    public bool IsHoldingObject() { return state == States.HoldingObject; }
 }

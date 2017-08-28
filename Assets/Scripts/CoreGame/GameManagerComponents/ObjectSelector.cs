@@ -69,8 +69,7 @@ public class ObjectSelector : MonoBehaviour {
         Camera camera = GameManager.Instance.MainCamera;
         Ray ray = camera.ScreenPointToRay(position);
         RaycastHit hit;
-        LayerMask layers = 1 << Layers.BUILDING | 1 << Layers.COLLECTIBLE | 1 << Layers.UNIT;
-        if (Physics.Raycast(ray, out hit, 100, layers))
+        if (Physics.Raycast(ray, out hit, 100, Layers.SELECTABLE_OBJECT))
         {
             return hit.collider.GetComponentInParent<SelectableObject>();
         }

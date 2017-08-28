@@ -11,9 +11,11 @@ public static class GameConstants {
 
 public static class Layers
 {
-    public const int UNIT = 8;
-    public const int COLLECTIBLE = 9;
-    public const int TERRAIN = 10;
-    public const int BUILDING = 11;
-    public const int WALL = 12;
+    public const int UNIT = 1 << 8;
+    public const int COLLECTIBLE = 1 << 9;
+    public const int TERRAIN = 1 << 10;
+    public const int BUILDING = 1 << 11;
+    public const int WALL = 1 << 12;
+
+    public const int SELECTABLE_OBJECT = UNIT | COLLECTIBLE | BUILDING;
 }

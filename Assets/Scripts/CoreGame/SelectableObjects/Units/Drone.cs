@@ -1,8 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public sealed class Drone : Unit {
+public sealed class Drone : Unit, ICanGrab {
     
     public enum States
     {

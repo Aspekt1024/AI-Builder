@@ -42,8 +42,7 @@ public class MoveComponent : MonoBehaviour
                 return false;
         }
         
-        LayerMask layers = 1 << Layers.BUILDING | 1 << Layers.WALL | 1 << Layers.UNIT;
-        if (GridRaycaster.CheckForObject(unit.transform.position + distance, layers))
+        if (GridRaycaster.CheckForObject(unit.transform.position + distance, Layers.SELECTABLE_OBJECT))
         {
             moveRoutine = StartCoroutine(MoveFailRoutine(unit, distance));
             return false;
