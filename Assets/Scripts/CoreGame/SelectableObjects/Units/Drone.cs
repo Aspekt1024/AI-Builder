@@ -47,9 +47,9 @@ public sealed class Drone : Unit, ICanGrab {
             {
                 if (other.gameObject == grabber.GetHeldCollectible().gameObject) return;
             }
-
-            Explode();
-            other.GetComponent<ResourceCube>().Explode();
+            
+            other.GetComponent<ResourceCube>().Hit(transform.position);
+            moveComponent.ReverseMovement(this);
         }
     }
     #endregion
@@ -145,10 +145,6 @@ public sealed class Drone : Unit, ICanGrab {
                 moveComponent.ReverseMovement(this);
                 break;
             case Layers.COLLECTIBLE:
-                if (collision.collider.GetComponent<ResourceCube>() != null)
-                {
-                    Explode();
-                }
                 moveComponent.ReverseMovement(this);
                 break;
             default:

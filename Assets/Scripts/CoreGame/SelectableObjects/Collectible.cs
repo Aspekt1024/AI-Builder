@@ -8,7 +8,7 @@ public class Collectible : SelectableObject, IGrabbable {
 
     protected enum GrabState
     {
-        None, PickedUp, PutDown, Consumed
+        None, PickedUp, PutDown
     }
     protected GrabState grabState;
 
@@ -32,11 +32,6 @@ public class Collectible : SelectableObject, IGrabbable {
         grabState = GrabState.PutDown;
         currentHolder = null;
         OnPlaced();
-    }
-
-    public void Consumed()
-    {
-        grabState = GrabState.Consumed;
     }
 
     public void SetPosition(Vector3 position)

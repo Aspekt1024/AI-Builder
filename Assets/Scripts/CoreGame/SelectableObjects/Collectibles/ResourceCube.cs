@@ -4,31 +4,58 @@ using UnityEngine;
 
 public sealed class ResourceCube : Collectible {
     
+    private enum States
+    {
+        None, Collision, Consumed
+    }
+    private States state;
+
     private Light pointLight;
     private float energyRemaining;
+    private ParticleSystem particles;
 
 	void Start () {
         pointLight = GetComponentInChildren<Light>();
+        particles = GetComponentInChildren<ParticleSystem>();
+        particles.Stop();
         energyRemaining = 100f;
 	}
-	
-	private void Update ()
+
+    public void Hit(Vector3 otherPosition)
+    {
+        particles.transform.LookAt(otherPosition);
+        particles.transform.position += particles.transform.forward * 0.3f;
+        state = States.Collision;
+    }
+    
+    private void Update ()
     {
 		switch(grabState)
         {
             case GrabState.None:
                 pointLight.intensity = 0.6f;
+                grabState = GrabState.PutDown;
                 break;
             case GrabState.PickedUp:
                 pointLight.intensity = 100f;
                 break;
             case GrabState.PutDown:
-                pointLight.intensity = 0.6f;
-                break;
-            case GrabState.Consumed:
-                // TODO destroy
+                grabState = GrabState.None;
                 break;
         }
+
+        switch(state)
+        {
+            case States.None:
+                break;
+            case States.Collision:
+                particles.Play();
+                state = States.None;
+                break;
+            case States.Consumed:
+                break;
+        }
+
 	}
 
     public void Explode()

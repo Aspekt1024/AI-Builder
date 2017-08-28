@@ -6,7 +6,6 @@ public interface IGrabbable {
 
     void PickedUp(IHolder grabber);
     void PutDown();
-    void Consumed();
     void SetPosition(Vector3 position);
     void RotateObject(Vector3 eulerRotation);
     bool CheckForValidDrop(Vector3 position);
