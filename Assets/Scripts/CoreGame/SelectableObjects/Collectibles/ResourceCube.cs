@@ -37,7 +37,14 @@ public sealed class ResourceCube : Collectible {
                 grabState = GrabState.PutDown;
                 break;
             case GrabState.PickedUp:
-                pointLight.intensity = 100f;
+                if (currentHolder.GetType().Equals(typeof(PowerPad)))
+                {
+                    pointLight.intensity = 100f;
+                }
+                else
+                {
+                    pointLight.intensity = 0.6f;
+                }
                 break;
             case GrabState.PutDown:
                 grabState = GrabState.None;

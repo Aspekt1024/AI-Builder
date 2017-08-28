@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Collectible : SelectableObject, IGrabbable {
 
-    private IHolder currentHolder;
+    protected IHolder currentHolder;
 
     protected enum GrabState
     {
