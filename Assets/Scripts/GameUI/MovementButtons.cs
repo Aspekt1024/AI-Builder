@@ -10,6 +10,11 @@ public class MovementButtons : MonoBehaviour {
         ((IHasQueue)ObjectSelector.GetSelectedObject()).StartQueue();
     }
 
+    public void ClearQueue()
+    {
+        ((IHasQueue)ObjectSelector.GetSelectedObject()).ClearCommands();
+    }
+
     public void LookLeft()
     {
         LookTowards(Direction.W);

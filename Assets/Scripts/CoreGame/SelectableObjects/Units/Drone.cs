@@ -91,11 +91,9 @@ public sealed class Drone : Unit, ICanGrab, IHasQueue {
 
     public override void FinishedAction()
     {
-        Debug.Log("finished action with state " + state);
         if (state == States.Executing)
         {
             SetState(States.CallingNext);
-            Debug.Log("calling next");
         }
     }
 
@@ -182,6 +180,14 @@ public sealed class Drone : Unit, ICanGrab, IHasQueue {
         else
         {
             return false;
+        }
+    }
+
+    public void QueueComplete()
+    {
+        if (state != States.Disabled)
+        {
+            state = States.None;
         }
     }
 

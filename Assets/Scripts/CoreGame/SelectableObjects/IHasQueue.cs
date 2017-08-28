@@ -12,5 +12,6 @@ public interface IHasQueue : IObjectAttribute
     bool ClearCommands();
     bool CallNext();
     bool RestartQueue();
+    void QueueComplete();
     List<Commands> GetCommandQueue();
 }

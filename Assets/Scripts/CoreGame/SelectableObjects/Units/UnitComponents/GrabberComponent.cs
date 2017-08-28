@@ -48,7 +48,6 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
 
     public bool GrabObjectAtPosition(Vector3 position)
     {
-        Debug.Log("grabbing");
         gameObject.GetComponent<ICanGrab>().FinishedAction();
 
         if (state == States.HoldingObject) return false;

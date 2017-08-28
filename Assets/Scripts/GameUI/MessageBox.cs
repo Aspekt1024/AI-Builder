@@ -6,6 +6,8 @@ using UnityEngine.UI;
 public class MessageBox : MonoBehaviour {
 
     public Text MessageText;
+    public Text StepIndicator;
+    public Text MemoryIndicator;
 
     private Queue messages;
 
@@ -33,13 +35,47 @@ public class MessageBox : MonoBehaviour {
         {
             Debug.LogError("Detected more than one MessageBox in the scene!");
         }
-        AddText();
+        ClearText();
     }
     #endregion
-
-    public void AddText()
+    
+    private void ClearText()
     {
-        MessageText.text = MessageText.text + "\ntest";
+        MessageText.text = string.Empty;
+        MemoryIndicator.text = string.Empty;
+        StepIndicator.text = string.Empty;
     }
 
+    public static void SetTextFromQueue(List<CommandQueue.Commands> commandQueue)
+    {
+        string queueString = string.Empty;
+        for (int i = 0; i < commandQueue.Count; i++)
+        {
+            queueString += "\n>> " + ObjectSelector.GetSelectedObject().name + "." + commandQueue[i].ToString() + "();";
+        }
+        Instance.MessageText.text = queueString;
+    }
+
+    public static void ClearStepIndicator()
+    {
+        Instance.StepIndicator.text = string.Empty;
+    }
+
+    public static void SetStepIndicator(int index)
+    {
+        string indicatorText = string.Empty;
+        for (int i = 0; i <= index; i++)
+        {
+            indicatorText += "\n";
+        }
+        indicatorText += ">";
+
+        Instance.StepIndicator.text = indicatorText;
+    }
+
+    public static void SetMemoryInidcator(int availableMem, int maxMem)
+    {
+        string memoryText = "Available Memory: " + availableMem + "/" + maxMem;
+        Instance.MemoryIndicator.text = memoryText;
+    }
 }
