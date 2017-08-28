@@ -57,5 +57,5 @@ public class Unit : SelectableObject, IMoveable {
         moveComponent.StopMovement();
     }
 
-    public virtual void FinishedMoving() { }
+    public virtual void FinishedAction() { }
 }

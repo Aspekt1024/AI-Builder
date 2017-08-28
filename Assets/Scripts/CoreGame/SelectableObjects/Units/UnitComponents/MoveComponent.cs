@@ -30,16 +30,16 @@ public class MoveComponent : MonoBehaviour, IMovement
             case Direction.None:
                 return true;
             case Direction.N:
-                StartCoroutine(TurnTowardsPoint(unit.transform, unit.transform.position + Vector3.forward));
+                StartCoroutine(TurnTowardsPoint(unit, unit.transform.position + Vector3.forward));
                 break;
             case Direction.S:
-                StartCoroutine(TurnTowardsPoint(unit.transform, unit.transform.position + Vector3.back));
+                StartCoroutine(TurnTowardsPoint(unit, unit.transform.position + Vector3.back));
                 break;
             case Direction.E:
-                StartCoroutine(TurnTowardsPoint(unit.transform, unit.transform.position + Vector3.right));
+                StartCoroutine(TurnTowardsPoint(unit, unit.transform.position + Vector3.right));
                 break;
             case Direction.W:
-                StartCoroutine(TurnTowardsPoint(unit.transform, unit.transform.position + Vector3.left));
+                StartCoroutine(TurnTowardsPoint(unit, unit.transform.position + Vector3.left));
                 break;
             default:
                 Debug.LogWarning("Diagonal directions not implemented");
@@ -77,7 +77,7 @@ public class MoveComponent : MonoBehaviour, IMovement
             yield return null;
         }
         unit.transform.position = originalPosition;
-        unit.FinishedMoving();
+        unit.FinishedAction();
     }
 
     private IEnumerator MoveRoutine(Unit unit, Vector3 distance)
@@ -93,11 +93,12 @@ public class MoveComponent : MonoBehaviour, IMovement
             yield return null;
         }
         unit.transform.position = endPos;
-        unit.FinishedMoving();
+        unit.FinishedAction();
     }
 
-    private IEnumerator TurnTowardsPoint(Transform unitTf, Vector3 lookPoint)
+    private IEnumerator TurnTowardsPoint(Unit unit, Vector3 lookPoint)
     {
+        Transform unitTf = unit.transform;
         float targetRotation = GetTargetRotation(unitTf, lookPoint);
         float requiredRotation = GetRequiredRotation(unitTf, targetRotation);
 
@@ -119,6 +120,7 @@ public class MoveComponent : MonoBehaviour, IMovement
             yield return null;
         }
         unitTf.LookAt(lookPoint);
+        unit.FinishedAction();
     }
 
     private float GetTargetRotation(Transform unitTf, Vector3 lookPoint)

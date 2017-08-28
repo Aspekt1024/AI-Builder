@@ -5,6 +5,11 @@ using Direction = MoveComponent.Direction;
 
 public class MovementButtons : MonoBehaviour {
 
+    public void Run()
+    {
+        ((IHasQueue)ObjectSelector.GetSelectedObject()).StartQueue();
+    }
+
     public void LookLeft()
     {
         LookTowards(Direction.W);
@@ -27,28 +32,43 @@ public class MovementButtons : MonoBehaviour {
 
     public void GrabObject()
     {
-        if (ObjectSelector.GetSelectedObject().IsType<Drone>())
+        if (ObjectSelector.GetSelectedObject().IsType<IHasQueue>())
         {
-            ((Drone)ObjectSelector.GetSelectedObject()).GrabObject();
+            ((IHasQueue)ObjectSelector.GetSelectedObject()).AddCommand(CommandQueue.Commands.GrabObject);
         }
     }
 
     public void ReleaseObject()
     {
-        if (ObjectSelector.GetSelectedObject().IsType<Drone>())
+        if (ObjectSelector.GetSelectedObject().IsType<IHasQueue>())
         {
-            ((Drone)ObjectSelector.GetSelectedObject()).ReleaseObject();
+            ((IHasQueue)ObjectSelector.GetSelectedObject()).AddCommand(CommandQueue.Commands.ReleaseObject);
         }
     }
 
     private void LookTowards(Direction direction)
     {
         if (ObjectSelector.GetSelectedObject() == null) return;
-
-        Debug.Log(ObjectSelector.GetSelectedObject());
+        
         if (ObjectSelector.GetSelectedObject().IsType<IMoveable>())
         {
-            ((IMoveable)ObjectSelector.GetSelectedObject()).TurnTowards(direction);
+            CommandQueue.Commands command = CommandQueue.Commands.LookDown;
+            switch(direction)
+            {
+                case Direction.N:
+                    command = CommandQueue.Commands.LookUp;
+                    break;
+                case Direction.S:
+                    command = CommandQueue.Commands.LookDown;
+                    break;
+                case Direction.E:
+                    command = CommandQueue.Commands.LookRight;
+                    break;
+                case Direction.W:
+                    command = CommandQueue.Commands.LookLeft;
+                    break;
+            }
+            ((IHasQueue)ObjectSelector.GetSelectedObject()).AddCommand(command);
         }
     }
 
@@ -57,7 +77,7 @@ public class MovementButtons : MonoBehaviour {
         if (ObjectSelector.GetSelectedObject() == null) return;
         if (ObjectSelector.GetSelectedObject().IsType<IMoveable>())
         {
-            ((IMoveable)ObjectSelector.GetSelectedObject()).MoveForward();
+            ((IHasQueue)ObjectSelector.GetSelectedObject()).AddCommand(CommandQueue.Commands.MoveForward);
         }
     }
 
@@ -66,7 +86,7 @@ public class MovementButtons : MonoBehaviour {
         if (ObjectSelector.GetSelectedObject() == null) return;
         if (ObjectSelector.GetSelectedObject().IsType<IMoveable>())
         {
-            ((IMoveable)ObjectSelector.GetSelectedObject()).MoveBackward();
+            ((IHasQueue)ObjectSelector.GetSelectedObject()).AddCommand(CommandQueue.Commands.MoveBackward);
         }
     }
 }

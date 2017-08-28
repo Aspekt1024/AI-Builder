@@ -10,5 +10,4 @@ public interface IMoveable : IUnitAttribute {
     bool MoveBackward();
     bool TurnTowards(Direction direction);
     void StopMoving();
-    void FinishedMoving();
 }

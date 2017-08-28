@@ -42,11 +42,15 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
         state = States.HoldingObject;
         grabbedObject = obj;
         obj.PickedUp(this);
+        gameObject.GetComponent<ICanGrab>().FinishedAction();
         return true;
     }
 
     public bool GrabObjectAtPosition(Vector3 position)
     {
+        Debug.Log("grabbing");
+        gameObject.GetComponent<ICanGrab>().FinishedAction();
+
         if (state == States.HoldingObject) return false;
 
         Ray ray = new Ray()
@@ -81,6 +85,8 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
 
     public bool ReleaseObjectToPosition(Vector3 position)
     {
+        gameObject.GetComponent<ICanGrab>().FinishedAction();
+
         if (grabbedObject.CheckForValidDrop(position))
         {
             state = States.None;

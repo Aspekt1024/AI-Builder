@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface ICanGrab {
+public interface ICanGrab : IUnitAttribute {
 
     bool GrabObject();
     bool ReleaseObject();
-
 }

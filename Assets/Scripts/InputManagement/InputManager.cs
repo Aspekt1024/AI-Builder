@@ -20,7 +20,7 @@ public class InputManager : MonoBehaviour {
         RightMouseUp, RightMouseDown
     }
 
-    private bool mouseDownHeld;
+    //private bool mouseDownHeld;
 
     private const int LEFT_MOUSE_BUTTON = 0;
     private const int RIGHT_MOUSE_BUTTON = 1;
@@ -51,12 +51,12 @@ public class InputManager : MonoBehaviour {
 
         if (Input.GetMouseButtonUp(LEFT_MOUSE_BUTTON))
         {
-            mouseDownHeld = false;
+            //mouseDownHeld = false;
             GameManager.LeftMouseUpReceived(Input.mousePosition);
         }
         else if (Input.GetMouseButtonDown(LEFT_MOUSE_BUTTON))
         {
-            mouseDownHeld = true;
+            //mouseDownHeld = true;
             GameManager.LeftMouseDownReceived(Input.mousePosition);
         }
         else
