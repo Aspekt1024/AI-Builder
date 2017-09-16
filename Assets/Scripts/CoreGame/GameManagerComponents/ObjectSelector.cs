@@ -66,7 +66,7 @@ public class ObjectSelector : MonoBehaviour {
 
     private static SelectableObject GetObjectByRaycast(Vector2 position)
     {
-        Camera camera = GameManager.Instance.MainCamera;
+        Camera camera = GameController.Instance.MainCamera;
         Ray ray = camera.ScreenPointToRay(position);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit, 100, Layers.SELECTABLE_OBJECT))

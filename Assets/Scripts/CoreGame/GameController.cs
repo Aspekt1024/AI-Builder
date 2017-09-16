@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameManager : MonoBehaviour {
+public class GameController : MonoBehaviour {
 
     public Camera MainCamera;
 
@@ -13,8 +13,8 @@ public class GameManager : MonoBehaviour {
     private States state;
 
     #region initialisation
-    private static GameManager gameManager;
-    public static GameManager Instance
+    private static GameController gameManager;
+    public static GameController Instance
     {
         get
         {

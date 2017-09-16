@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CommandQueue : MonoBehaviour, ICommandQueue {
+public class CommandQueue : MonoBehaviour {
 
     // TODO make tags/attributes for each IObjectAttribute
     // then automatically populate this and call commands directly,

@@ -14,7 +14,7 @@ public class TooltipHandler : MonoBehaviour {
         {
             TooltipPanel.gameObject.SetActive(true);
         }
-        TooltipPanel.position = GameManager.Instance.MainCamera.WorldToScreenPoint(obj.transform.position) + Vector3.up * 30;
+        TooltipPanel.position = GameController.Instance.MainCamera.WorldToScreenPoint(obj.transform.position) + Vector3.up * 30;
         TooltipText.text = obj.name;
     }
     

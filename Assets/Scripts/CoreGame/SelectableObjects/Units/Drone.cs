@@ -24,6 +24,10 @@ public sealed class Drone : Unit, ICanGrab, IHasQueue {
         Health = 1;
         MaxHealth = 1;
         GetComponents();
+
+        // TODO setup vision component
+        Vector3[] positions = new Vector3[1] { transform.position };
+        Level.ShowTilesAtPositions(positions);
     }
 
     private void Update()

@@ -52,16 +52,16 @@ public class InputManager : MonoBehaviour {
         if (Input.GetMouseButtonUp(LEFT_MOUSE_BUTTON))
         {
             //mouseDownHeld = false;
-            GameManager.LeftMouseUpReceived(Input.mousePosition);
+            GameController.LeftMouseUpReceived(Input.mousePosition);
         }
         else if (Input.GetMouseButtonDown(LEFT_MOUSE_BUTTON))
         {
             //mouseDownHeld = true;
-            GameManager.LeftMouseDownReceived(Input.mousePosition);
+            GameController.LeftMouseDownReceived(Input.mousePosition);
         }
         else
         {
-            GameManager.CheckMouseover(Input.mousePosition);
+            GameController.CheckMouseover(Input.mousePosition);
         }
     }
 }
