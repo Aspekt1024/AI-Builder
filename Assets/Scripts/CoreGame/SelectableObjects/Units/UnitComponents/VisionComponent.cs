@@ -9,19 +9,21 @@ public class VisionComponent : MonoBehaviour, IVision {
     private List<TileIndex> tilesToHide;
 
     private bool hasSelfVision;
-    private bool hasCrossVision;
     private bool hasForwardVision;
+    private bool hasCrossVision;
+    private bool hasForwardLineOfSightVision;
     private bool hasLineOfSightVision;
     private bool hasTotalVision;
 
     private bool hasVisionMemory;
 
-    private void Start()
+    private void Awake()
     {
         visibleTiles = new List<TileIndex>();
 
         hasSelfVision = true;
-        hasCrossVision = true;
+        hasForwardVision = true;
+        hasVisionMemory = false;
     }
 
     public bool Look()
@@ -42,6 +44,10 @@ public class VisionComponent : MonoBehaviour, IVision {
         {
             tilesToShow.Add(currentTile);
         }
+        if (hasForwardVision)
+        {
+            tilesToShow.Add(Floor.GetTileIndex(transform.position + transform.forward * LevelGrid.TILE_SIZE));
+        }
         if (hasCrossVision)
         {
             tilesToShow.Add(new TileIndex(currentTile.Row - 1, currentTile.Col));
@@ -51,6 +57,8 @@ public class VisionComponent : MonoBehaviour, IVision {
         }
 
         tilesToHide = new List<TileIndex>();
+        if (hasVisionMemory) return;
+
         foreach(TileIndex tile in visibleTiles)
         {
             if (!tilesToShow.Contains(tile))

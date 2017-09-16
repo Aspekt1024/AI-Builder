@@ -12,17 +12,16 @@ public class Tile : MonoBehaviour
     private Vector3 startPosition;
     private Vector3 targetPosition;
     private float transitionTimer;
-    private const float VerticalDist = 10f;
-    private const float ShowDuration = 0.2f;
-    private const float HideDuration = 0.2f;
+    private const float VerticalDist = 2f;
+    private const float ShowDuration = 0.4f;
+    private const float HideDuration = 1f;
 
     private MeshRenderer meshRenderer;
-    private SelectableObject inhabitingObject;
-    private float[] originalObjectAlpha;
+    private List<SelectableObject> inhabitingObjects = new List<SelectableObject>();
 
     #region lifecycle
 
-    private void Start()
+    private void Awake()
     {
         state = States.Hidden;
         meshRenderer = GetComponent<MeshRenderer>();
@@ -53,10 +52,21 @@ public class Tile : MonoBehaviour
 
     #endregion lifecycle
 
-    public void SetInhabitingObject(SelectableObject obj)
+    public void RemoveInhabitingObject(SelectableObject obj)
     {
-        inhabitingObject = obj;
-        originalObjectAlpha = GetOriginalAlpha(inhabitingObject);
+        obj.SetAlpha(1f);
+        inhabitingObjects.Remove(obj);
+    }
+
+    public void AddInhabitingObject(SelectableObject obj)
+    {
+        if (inhabitingObjects.Contains(obj)) return;
+        inhabitingObjects.Add(obj);
+
+        if (state == States.Hidden || state == States.Hiding)
+        {
+            obj.SetAlpha(0f);
+        }
     }
 
     public void Show()
@@ -67,8 +77,11 @@ public class Tile : MonoBehaviour
         startPosition.y = -VerticalDist;
         targetPosition.y = 0f;
 
-        transitionTimer = 0f;
         transform.position = startPosition;
+        SetObjectAlpha(0f);
+        SetTileAlpha(0f);
+
+        transitionTimer = 0f;
         meshRenderer.enabled = true;
         state = States.Showing;
     }
@@ -86,20 +99,16 @@ public class Tile : MonoBehaviour
         {
             state = States.Hiding;
         }
-
-        startPosition = targetPosition = transform.position;
-        targetPosition.y = -VerticalDist;
+        
         transitionTimer = 0f;
     }
-
-    public bool IsHidden() { return state == States.Hiding || state == States.Hidden; }
-    public bool IsVisible() { return state == States.Visible || state == States.Showing; }
 
     private void MoveToVisiblePosition()
     {
         transitionTimer += Time.deltaTime;
         transform.position = Vector3.Lerp(startPosition, targetPosition, transitionTimer / ShowDuration);
-        SetObjectAlpha(inhabitingObject, transitionTimer / ShowDuration);
+        SetObjectAlpha(transitionTimer / ShowDuration);
+        SetTileAlpha(transitionTimer / ShowDuration);
 
         if (transitionTimer >= ShowDuration)
         {
@@ -118,10 +127,10 @@ public class Tile : MonoBehaviour
     private void MoveToHiddenPosition()
     {
         transitionTimer += Time.deltaTime;
-        if (transitionTimer < HideDuration / 3f) return;
 
-        transform.position = Vector3.Lerp(startPosition, targetPosition, (transitionTimer - HideDuration / 3f) / (2f * HideDuration / 3f));
-        SetObjectAlpha(inhabitingObject, 1 - transitionTimer / ShowDuration);
+        float alpha = 1 - transitionTimer / ShowDuration;
+        SetObjectAlpha(alpha);
+        SetTileAlpha(alpha);
 
         if (transitionTimer >= HideDuration)
         {
@@ -129,30 +138,21 @@ public class Tile : MonoBehaviour
             state = States.Hidden;
         }
     }
-
-    private void SetObjectAlpha(SelectableObject obj, float alpha)
+    
+    private void SetObjectAlpha(float alpha)
     {
-        if (inhabitingObject == null) return;
+        if (inhabitingObjects == null) return;
         
-        MeshRenderer objMeshRenderer = obj.GetComponentInChildren<MeshRenderer>();
-        for (int i = 0; i < originalObjectAlpha.Length; i++)
+        foreach (SelectableObject obj in inhabitingObjects)
         {
-            Color matColor = objMeshRenderer.materials[i].color;
-            matColor.a = Mathf.Min(originalObjectAlpha[i], alpha);
-            objMeshRenderer.materials[i].color = matColor;
+            obj.SetAlpha(alpha);
         }
     }
 
-    private float[] GetOriginalAlpha(SelectableObject obj)
+    private void SetTileAlpha(float alpha)
     {
-        if (inhabitingObject == null) return null;
-
-        MeshRenderer objMeshRenderer = obj.GetComponentInChildren<MeshRenderer>();
-        float[] alphas = new float[objMeshRenderer.materials.Length];
-        for (int i = 0; i < alphas.Length; i++)
-        {
-            alphas[i] = objMeshRenderer.materials[i].color.a;
-        }
-        return alphas;
+        Color matColor = meshRenderer.material.color;
+        matColor.a = alpha;
+        meshRenderer.material.color = matColor;
     }
 }

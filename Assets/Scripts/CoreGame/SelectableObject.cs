@@ -3,12 +3,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SelectableObject : MonoBehaviour {
+public class SelectableObject : MonoBehaviour, ICanFade {
 
     protected float selectionSize = 34.4f;
     protected Rigidbody body;
+    protected MeshRenderer meshRenderer;
+
+    protected float[] originalAlphas;
     
-	private void Start ()
+	private void Awake ()
     {
         GetComponents();
 	}
@@ -16,6 +19,18 @@ public class SelectableObject : MonoBehaviour {
     protected virtual void GetComponents()
     {
         body = GetComponent<Rigidbody>();
+        meshRenderer = GetComponentInChildren<MeshRenderer>();
+        GetOriginalAlphas();
+    }
+
+    public virtual void SetAlpha(float alpha)
+    {
+        for (int i = 0; i < meshRenderer.materials.Length; i++)
+        {
+            Color matColor = meshRenderer.materials[i].color;
+            matColor.a = Mathf.Min(originalAlphas[i], alpha);
+            meshRenderer.materials[i].color = matColor;
+        }
     }
 
     public bool IsType<T>()
@@ -35,5 +50,14 @@ public class SelectableObject : MonoBehaviour {
     }
     
     public float GetSelectionSize() { return selectionSize; }
+
+    private void GetOriginalAlphas()
+    {
+        originalAlphas = new float[meshRenderer.materials.Length];
+        for (int i = 0; i < originalAlphas.Length; i++)
+        {
+            originalAlphas[i] = meshRenderer.materials[i].color.a;
+        }
+    }
 
 }

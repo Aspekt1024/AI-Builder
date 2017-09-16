@@ -14,9 +14,7 @@ public sealed class ResourceCube : Collectible {
     private float energyRemaining;
     private ParticleSystem particles;
 
-	void Start () {
-        pointLight = GetComponentInChildren<Light>();
-        particles = GetComponentInChildren<ParticleSystem>();
+	private void Start () {
         particles.Stop();
         energyRemaining = 100f;
 	}
@@ -111,6 +109,18 @@ public sealed class ResourceCube : Collectible {
             PowerPad pad = obj.GetComponent<PowerPad>();
             return pad != null;
         }
-        
+    }
+
+    protected override void GetComponents()
+    {
+        base.GetComponents();
+        pointLight = GetComponentInChildren<Light>();
+        particles = GetComponentInChildren<ParticleSystem>();
+    }
+
+    public override void SetAlpha(float alpha)
+    {
+        base.SetAlpha(alpha);
+        pointLight.enabled = alpha >= 0.1f;
     }
 }

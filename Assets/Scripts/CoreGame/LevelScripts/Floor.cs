@@ -36,6 +36,16 @@ public class Floor {
         tiles[index.Row, index.Col].Show();
     }
 
+    public void RemoveObjectFromTile(SelectableObject obj, TileIndex tile)
+    {
+        tiles[tile.Row, tile.Col].RemoveInhabitingObject(obj);
+    }
+
+    public void AddObjectToTile(SelectableObject obj, TileIndex tile)
+    {
+        tiles[tile.Row, tile.Col].AddInhabitingObject(obj);
+    }
+
     public void SetupFloorAtPosition(Vector3 position)
     {
         float xDiff = (LevelGrid.ROOM_COLS / 2f - 0.5f) * LevelGrid.TILE_SIZE;
@@ -46,11 +56,17 @@ public class Floor {
             for (int c = 0; c < LevelGrid.ROOM_COLS; c++)
             {
                 tiles[r, c].transform.position = position + new Vector3(c * LevelGrid.TILE_SIZE, 0f, r * LevelGrid.TILE_SIZE);
-                if (c == 3 && r == 3)
+                if (c == 7 && r == 8)
                 {
                     GameObject go = Object.Instantiate(Resources.Load<GameObject>("Prefabs/Selectables/Buildings/PowerPad"));
                     go.transform.position = tiles[r, c].transform.position;
-                    tiles[r, c].SetInhabitingObject(go.GetComponent<SelectableObject>());
+                    tiles[r, c].AddInhabitingObject(go.GetComponent<SelectableObject>());
+                }
+                if (c == 8 && r == 5)
+                {
+                    GameObject go = Object.Instantiate(Resources.Load<GameObject>("Prefabs/Selectables/Collectibles/ResourceCube"));
+                    go.transform.position = tiles[r, c].transform.position;
+                    tiles[r, c].AddInhabitingObject(go.GetComponent<SelectableObject>());
                 }
             }
         }

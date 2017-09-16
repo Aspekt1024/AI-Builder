@@ -22,10 +22,7 @@ public class Level : MonoBehaviour {
         {
             Debug.LogError("Multiple instance of Level (script) found in scene.");
         }
-    }
 
-    private void Start()
-    {
         levelNum = 1;
         levelCenter = LevelGrid.GetLevelPos(levelNum);
         LoadFloor();
@@ -35,6 +32,18 @@ public class Level : MonoBehaviour {
     {
         floor = new Floor();
         floor.SetupFloorAtPosition(Vector3.zero);
+    }
+
+    public static void RemoveObjectFromTile(SelectableObject obj)
+    {
+        TileIndex tile = GetTileIndex(obj.transform.position);
+        levelScript.floor.RemoveObjectFromTile(obj, tile);
+    }
+
+    public static void AddObjectToTile(SelectableObject obj)
+    {
+        TileIndex tile = GetTileIndex(obj.transform.position);
+        levelScript.floor.AddObjectToTile(obj, tile);
     }
 
     public static void ShowTiles(List<TileIndex> tiles)
@@ -61,7 +70,6 @@ public class Level : MonoBehaviour {
     private static TileIndex GetTileIndex(Vector2 position)
     {
         position -= new Vector2(levelScript.levelCenter.x, levelScript.levelCenter.z);
-        Debug.Log(position);
         return Floor.GetTileIndex(position);
     }
 }

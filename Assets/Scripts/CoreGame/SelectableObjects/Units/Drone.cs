@@ -25,6 +25,8 @@ public sealed class Drone : Unit, ICanGrab, IHasQueue, ICanSee {
         Health = 1;
         MaxHealth = 1;
         GetComponents();
+
+        Look();
     }
 
     private void Update()
