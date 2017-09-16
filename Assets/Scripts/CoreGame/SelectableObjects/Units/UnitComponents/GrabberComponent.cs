@@ -39,19 +39,52 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
     
     public bool GrabObject(IGrabbable obj)
     {
-        state = States.HoldingObject;
-        grabbedObject = obj;
-        obj.PickedUp(this);
-        gameObject.GetComponent<ICanGrab>().FinishedAction();
-        return true;
+        bool grabSuccessful = true;
+        if (obj == null)
+        {
+            // TODO failure reason, no object to grab
+            grabSuccessful = false;
+        }
+        else
+        {
+            grabbedObject = obj;
+            obj.PickedUp(this);
+            state = States.HoldingObject;
+        }
+        gameObject.GetComponent<ICanGrab>().FinishedAction(grabSuccessful);
+        return grabSuccessful;
     }
 
     public bool GrabObjectAtPosition(Vector3 position)
     {
-        gameObject.GetComponent<ICanGrab>().FinishedAction();
+        bool grabSuccessful = true;
 
-        if (state == States.HoldingObject) return false;
+        if (state == States.HoldingObject)
+        {
+            gameObject.GetComponent<ICanGrab>().FinishedAction(false);
+            // TODO failure reason: already holding object
+            return false;
+        }
 
+        grabbedObject = GetGrabbableObjectAtPoint(position);
+        
+        if (grabbedObject == null)
+        {
+            // TODO failure reason, no object to grab
+            grabSuccessful = false;
+        }
+        else
+        {
+            grabbedObject.PickedUp(this);
+            state = States.HoldingObject;
+        }
+
+        gameObject.GetComponent<ICanGrab>().FinishedAction(grabSuccessful);
+        return grabSuccessful;
+    }
+
+    private IGrabbable GetGrabbableObjectAtPoint(Vector3 position)
+    {
         Ray ray = new Ray()
         {
             origin = position,
@@ -62,17 +95,14 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
         if (Physics.Raycast(ray, out hit, 10f, Layers.COLLECTIBLE))
         {
             SelectableObject obj = hit.collider.gameObject.GetComponent<SelectableObject>();
-            if (obj == null) return false;
+            if (obj == null) return null;
 
-            if (obj.IsType<Collectible>())
+            if (obj.IsType<IGrabbable>())
             {
-                grabbedObject = (IGrabbable)obj;
-                ((IGrabbable)obj).PickedUp(this);
-                state = States.HoldingObject;
-                return true;
+                return (IGrabbable)obj;
             }
         }
-        return false;
+        return null;
     }
 
     public bool DetachGrabbedObject()
@@ -84,7 +114,7 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
 
     public bool ReleaseObjectToPosition(Vector3 position)
     {
-        gameObject.GetComponent<ICanGrab>().FinishedAction();
+        bool releaseSuccessful = true;
 
         if (grabbedObject.CheckForValidDrop(position))
         {
@@ -92,12 +122,14 @@ public class GrabberComponent : MonoBehaviour, IGrabber {
             grabbedObject.SetPosition(position);
             grabbedObject.PutDown();
             grabbedObject = null;
-            return true;
         }
         else
         {
-            return false;
+            // TODO failure reason, could not place at specified location
+            releaseSuccessful = false;
         }
+        gameObject.GetComponent<ICanGrab>().FinishedAction(releaseSuccessful);
+        return releaseSuccessful;
     }
 
     public Collectible GetHeldCollectible()

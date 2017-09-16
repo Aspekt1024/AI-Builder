@@ -8,5 +8,5 @@ public interface IUnitComponent : IObjectComponent { }
 
 public interface IUnitAttribute : IObjectAttribute
 {
-    void FinishedAction();
+    void FinishedAction(bool success);
 }

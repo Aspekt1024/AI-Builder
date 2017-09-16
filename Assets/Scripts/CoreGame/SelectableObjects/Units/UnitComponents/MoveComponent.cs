@@ -77,7 +77,7 @@ public class MoveComponent : MonoBehaviour, IMovement
             yield return null;
         }
         unit.transform.position = originalPosition;
-        unit.FinishedAction();
+        unit.FinishedAction(false);
     }
 
     private IEnumerator MoveRoutine(Unit unit, Vector3 distance)
@@ -93,7 +93,7 @@ public class MoveComponent : MonoBehaviour, IMovement
             yield return null;
         }
         unit.transform.position = endPos;
-        unit.FinishedAction();
+        unit.FinishedAction(true);
     }
 
     private IEnumerator TurnTowardsPoint(Unit unit, Vector3 lookPoint)
@@ -120,7 +120,7 @@ public class MoveComponent : MonoBehaviour, IMovement
             yield return null;
         }
         unitTf.LookAt(lookPoint);
-        unit.FinishedAction();
+        unit.FinishedAction(true);
     }
 
     private float GetTargetRotation(Transform unitTf, Vector3 lookPoint)

@@ -6,7 +6,6 @@ public class Floor {
 
     private Tile[,] tiles;
     
-    
     public Floor()
     {
         LoadTiles();
@@ -21,18 +20,19 @@ public class Floor {
             for (int c = 0; c < LevelGrid.ROOM_COLS; c++)
             {
                 tiles[r, c] = Object.Instantiate(tilePrefab).GetComponent<Tile>();
-                tiles[r, c].gameObject.SetActive(false);
             }
         }
     }
 
-    public void HideTile(int row, int col)
+    public void HideTile(TileIndex index)
     {
-        tiles[row, col].Hide();
+        if (index.Row < 0 || index.Col < 0 || index.Row >= LevelGrid.ROOM_ROWS || index.Col >= LevelGrid.ROOM_COLS) return;
+        tiles[index.Row, index.Col].Hide();
     }
 
     public void ShowTile(TileIndex index)
     {
+        if (index.Row < 0 || index.Col < 0 || index.Row >= LevelGrid.ROOM_ROWS || index.Col >= LevelGrid.ROOM_COLS) return;
         tiles[index.Row, index.Col].Show();
     }
 
@@ -46,9 +46,19 @@ public class Floor {
             for (int c = 0; c < LevelGrid.ROOM_COLS; c++)
             {
                 tiles[r, c].transform.position = position + new Vector3(c * LevelGrid.TILE_SIZE, 0f, r * LevelGrid.TILE_SIZE);
-                //tiles[r, c].Show();
+                if (c == 3 && r == 3)
+                {
+                    GameObject go = Object.Instantiate(Resources.Load<GameObject>("Prefabs/Selectables/Buildings/PowerPad"));
+                    go.transform.position = tiles[r, c].transform.position;
+                    tiles[r, c].SetInhabitingObject(go.GetComponent<SelectableObject>());
+                }
             }
         }
+    }
+
+    public static TileIndex GetTileIndex(Vector3 position)
+    {
+        return GetTileIndex(new Vector2(position.x, position.z));
     }
 
     public static TileIndex GetTileIndex(Vector2 position)
@@ -76,4 +86,10 @@ public struct TileIndex
 {
     public int Row;
     public int Col;
+
+    public TileIndex(int row, int col)
+    {
+        Row = row;
+        Col = col;
+    }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 using Commands = CommandQueue.Commands;
 
-public sealed class Drone : Unit, ICanGrab, IHasQueue {
+public sealed class Drone : Unit, ICanGrab, IHasQueue, ICanSee {
     
     public enum States
     {
@@ -16,18 +16,15 @@ public sealed class Drone : Unit, ICanGrab, IHasQueue {
     private ParticleSystem explosionPS;
     private GrabberComponent grabber;
     private CommandQueue commandQueue;
+    private VisionComponent vision;
 
     #region lifecycle
     private void Start()
     {
-        Speed = 10f;
+        Speed = 7f;
         Health = 1;
         MaxHealth = 1;
         GetComponents();
-
-        // TODO setup vision component
-        Vector3[] positions = new Vector3[1] { transform.position };
-        Level.ShowTilesAtPositions(positions);
     }
 
     private void Update()
@@ -61,6 +58,11 @@ public sealed class Drone : Unit, ICanGrab, IHasQueue {
     }
     #endregion
 
+    public bool Look()
+    {
+        return vision.Look();
+    }
+
     public bool GrabObject()
     {
         if (state == States.Disabled) return false;
@@ -93,8 +95,13 @@ public sealed class Drone : Unit, ICanGrab, IHasQueue {
         return base.MoveBackward();
     }
 
-    public override void FinishedAction()
+    public override void FinishedAction(bool success)
     {
+        if (success)
+        {
+            Look();
+        }
+
         if (state == States.Executing)
         {
             SetState(States.CallingNext);
@@ -112,6 +119,7 @@ public sealed class Drone : Unit, ICanGrab, IHasQueue {
         base.GetComponents();
         grabber = gameObject.AddComponent<GrabberComponent>();
         commandQueue = gameObject.AddComponent<CommandQueue>();
+        vision = gameObject.AddComponent<VisionComponent>();
 
         foreach (Transform tf in transform)
         {

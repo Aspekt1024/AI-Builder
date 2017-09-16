@@ -6,20 +6,27 @@ public class Tile : MonoBehaviour
 {
     private enum States
     {
-        Hidden, Visible, Showing, Hiding
+        Hidden, Visible, Showing, Hiding, ShowBeforeHiding
     }
     private States state;
     private Vector3 startPosition;
     private Vector3 targetPosition;
     private float transitionTimer;
     private const float VerticalDist = 10f;
-    private const float TransitionDuration = 0.4f;
+    private const float ShowDuration = 0.2f;
+    private const float HideDuration = 0.2f;
+
+    private MeshRenderer meshRenderer;
+    private SelectableObject inhabitingObject;
+    private float[] originalObjectAlpha;
 
     #region lifecycle
 
     private void Start()
     {
         state = States.Hidden;
+        meshRenderer = GetComponent<MeshRenderer>();
+        meshRenderer.enabled = false;
     }
 
     private void Update()
@@ -36,6 +43,9 @@ public class Tile : MonoBehaviour
             case States.Hiding:
                 MoveToHiddenPosition();
                 break;
+            case States.ShowBeforeHiding:
+                MoveToVisiblePosition();
+                break;
             default:
                 break;
         }
@@ -43,47 +53,106 @@ public class Tile : MonoBehaviour
 
     #endregion lifecycle
 
+    public void SetInhabitingObject(SelectableObject obj)
+    {
+        inhabitingObject = obj;
+        originalObjectAlpha = GetOriginalAlpha(inhabitingObject);
+    }
+
     public void Show()
     {
-        state = States.Showing;
-        gameObject.SetActive(true);
+        if (state == States.Showing || state == States.Visible) return;
+        
         startPosition = targetPosition = transform.position;
         startPosition.y = -VerticalDist;
         targetPosition.y = 0f;
+
         transitionTimer = 0f;
+        transform.position = startPosition;
+        meshRenderer.enabled = true;
+        state = States.Showing;
     }
 
     public void Hide()
     {
-        state = States.Hiding;
+        if (state == States.Hidden || state == States.Hiding || state == States.ShowBeforeHiding) return;
+        
+        if (state == States.Showing)
+        {
+            state = States.ShowBeforeHiding;
+            return;
+        }
+        else if (state == States.Visible)
+        {
+            state = States.Hiding;
+        }
+
         startPosition = targetPosition = transform.position;
         targetPosition.y = -VerticalDist;
         transitionTimer = 0f;
     }
 
-    public bool IsHidden() { return state == States.Hiding || state == States.Hidden || state == States.Showing; }
-    public bool IsVisible() { return state == States.Visible; }
+    public bool IsHidden() { return state == States.Hiding || state == States.Hidden; }
+    public bool IsVisible() { return state == States.Visible || state == States.Showing; }
 
     private void MoveToVisiblePosition()
     {
         transitionTimer += Time.deltaTime;
-        transform.position = Vector3.Lerp(startPosition, targetPosition, Mathf.Pow(transitionTimer / TransitionDuration, 0.1f));
+        transform.position = Vector3.Lerp(startPosition, targetPosition, transitionTimer / ShowDuration);
+        SetObjectAlpha(inhabitingObject, transitionTimer / ShowDuration);
 
-        if (transitionTimer >= TransitionDuration)
+        if (transitionTimer >= ShowDuration)
         {
-            state = States.Visible;
+            if (state == States.ShowBeforeHiding)
+            {
+                state = States.Visible;
+                Hide();
+            }
+            else
+            {
+                state = States.Visible;
+            }
         }
     }
 
     private void MoveToHiddenPosition()
     {
         transitionTimer += Time.deltaTime;
-        transform.position = Vector3.Lerp(startPosition, targetPosition, Mathf.Pow(transitionTimer / TransitionDuration, 8f));
+        if (transitionTimer < HideDuration / 3f) return;
 
-        if (transitionTimer >= TransitionDuration)
+        transform.position = Vector3.Lerp(startPosition, targetPosition, (transitionTimer - HideDuration / 3f) / (2f * HideDuration / 3f));
+        SetObjectAlpha(inhabitingObject, 1 - transitionTimer / ShowDuration);
+
+        if (transitionTimer >= HideDuration)
         {
-            gameObject.SetActive(false);
+            meshRenderer.enabled = false;
             state = States.Hidden;
         }
+    }
+
+    private void SetObjectAlpha(SelectableObject obj, float alpha)
+    {
+        if (inhabitingObject == null) return;
+        
+        MeshRenderer objMeshRenderer = obj.GetComponentInChildren<MeshRenderer>();
+        for (int i = 0; i < originalObjectAlpha.Length; i++)
+        {
+            Color matColor = objMeshRenderer.materials[i].color;
+            matColor.a = Mathf.Min(originalObjectAlpha[i], alpha);
+            objMeshRenderer.materials[i].color = matColor;
+        }
+    }
+
+    private float[] GetOriginalAlpha(SelectableObject obj)
+    {
+        if (inhabitingObject == null) return null;
+
+        MeshRenderer objMeshRenderer = obj.GetComponentInChildren<MeshRenderer>();
+        float[] alphas = new float[objMeshRenderer.materials.Length];
+        for (int i = 0; i < alphas.Length; i++)
+        {
+            alphas[i] = objMeshRenderer.materials[i].color.a;
+        }
+        return alphas;
     }
 }

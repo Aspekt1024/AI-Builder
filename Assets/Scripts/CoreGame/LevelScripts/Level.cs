@@ -9,6 +9,8 @@ public class Level : MonoBehaviour {
 
     private int levelNum;
     private Vector3 levelCenter;
+    
+
 
 	private void Awake () {
 
@@ -35,12 +37,19 @@ public class Level : MonoBehaviour {
         floor.SetupFloorAtPosition(Vector3.zero);
     }
 
-    public static void ShowTilesAtPositions(Vector3[] positions)
+    public static void ShowTiles(List<TileIndex> tiles)
     {
-        foreach(Vector2 pos in positions)
+        foreach(TileIndex tile in tiles)
         {
-            TileIndex index = GetTileIndex(pos);
-            levelScript.floor.ShowTile(index);
+            levelScript.floor.ShowTile(tile);
+        }
+    }
+
+    public static void HideTiles(List<TileIndex> tiles)
+    {
+        foreach(TileIndex tile in tiles)
+        {
+            levelScript.floor.HideTile(tile);
         }
     }
 
@@ -52,6 +61,7 @@ public class Level : MonoBehaviour {
     private static TileIndex GetTileIndex(Vector2 position)
     {
         position -= new Vector2(levelScript.levelCenter.x, levelScript.levelCenter.z);
+        Debug.Log(position);
         return Floor.GetTileIndex(position);
     }
 }
