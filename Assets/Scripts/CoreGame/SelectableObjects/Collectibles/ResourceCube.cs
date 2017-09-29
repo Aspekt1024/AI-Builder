@@ -118,9 +118,9 @@ public sealed class ResourceCube : Collectible {
         particles = GetComponentInChildren<ParticleSystem>();
     }
 
-    public override void SetAlpha(float alpha)
+    public override void SetSize(float alpha)
     {
-        base.SetAlpha(alpha);
+        base.SetSize(alpha);
         pointLight.enabled = alpha >= 0.1f;
     }
 }

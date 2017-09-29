@@ -16,6 +16,7 @@ public class VisionComponent : MonoBehaviour, IVision {
     private bool hasTotalVision;
 
     private bool hasVisionMemory;
+    private bool levelScanned;
 
     private void Awake()
     {
@@ -24,6 +25,8 @@ public class VisionComponent : MonoBehaviour, IVision {
         hasSelfVision = true;
         hasForwardVision = true;
         hasVisionMemory = false;
+        levelScanned = false;
+        hasTotalVision = true;
     }
 
     public bool Look()
@@ -39,6 +42,15 @@ public class VisionComponent : MonoBehaviour, IVision {
     {
         TileIndex currentTile = Floor.GetTileIndex(transform.position);
         tilesToShow = new List<TileIndex>();
+
+        if (hasTotalVision)
+        {
+            if (levelScanned) return;
+
+            ShowAllTiles();
+            levelScanned = true;
+            return;
+        }
 
         if (hasSelfVision)
         {
@@ -66,5 +78,17 @@ public class VisionComponent : MonoBehaviour, IVision {
                 tilesToHide.Add(tile);
             }
         }
+    }
+
+    private void ShowAllTiles()
+    {
+        for (int col = 0; col < LevelGrid.ROOM_COLS; col++)
+        {
+            for (int row = 0; row < LevelGrid.ROOM_ROWS; row++)
+            {
+                tilesToShow.Add(new TileIndex(row, col));
+            }
+        }
+        tilesToHide = new List<TileIndex>();
     }
 }

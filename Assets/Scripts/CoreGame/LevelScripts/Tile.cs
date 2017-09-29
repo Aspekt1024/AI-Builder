@@ -16,6 +16,7 @@ public class Tile : MonoBehaviour
     private const float ShowDuration = 0.4f;
     private const float HideDuration = 1f;
 
+    private Vector3 originalScale;
     private MeshRenderer meshRenderer;
     private List<SelectableObject> inhabitingObjects = new List<SelectableObject>();
 
@@ -25,6 +26,7 @@ public class Tile : MonoBehaviour
     {
         state = States.Hidden;
         meshRenderer = GetComponent<MeshRenderer>();
+        originalScale = transform.localScale;
         meshRenderer.enabled = false;
     }
 
@@ -54,7 +56,7 @@ public class Tile : MonoBehaviour
 
     public void RemoveInhabitingObject(SelectableObject obj)
     {
-        obj.SetAlpha(1f);
+        obj.SetSize(1f);
         inhabitingObjects.Remove(obj);
     }
 
@@ -65,7 +67,7 @@ public class Tile : MonoBehaviour
 
         if (state == States.Hidden || state == States.Hiding)
         {
-            obj.SetAlpha(0f);
+            obj.SetSize(0.01f);
         }
     }
 
@@ -78,8 +80,8 @@ public class Tile : MonoBehaviour
         targetPosition.y = 0f;
 
         transform.position = startPosition;
-        SetObjectAlpha(0f);
-        SetTileAlpha(0f);
+        SetObjectSize(0f);
+        SetTileSize(0f);
 
         transitionTimer = 0f;
         meshRenderer.enabled = true;
@@ -107,8 +109,8 @@ public class Tile : MonoBehaviour
     {
         transitionTimer += Time.deltaTime;
         transform.position = Vector3.Lerp(startPosition, targetPosition, transitionTimer / ShowDuration);
-        SetObjectAlpha(transitionTimer / ShowDuration);
-        SetTileAlpha(transitionTimer / ShowDuration);
+        SetObjectSize(transitionTimer / ShowDuration);
+        SetTileSize(transitionTimer / ShowDuration);
 
         if (transitionTimer >= ShowDuration)
         {
@@ -128,9 +130,9 @@ public class Tile : MonoBehaviour
     {
         transitionTimer += Time.deltaTime;
 
-        float alpha = 1 - transitionTimer / ShowDuration;
-        SetObjectAlpha(alpha);
-        SetTileAlpha(alpha);
+        float sizeRatio = 1 - transitionTimer / ShowDuration;
+        SetObjectSize(sizeRatio);
+        SetTileSize(sizeRatio);
 
         if (transitionTimer >= HideDuration)
         {
@@ -139,20 +141,18 @@ public class Tile : MonoBehaviour
         }
     }
     
-    private void SetObjectAlpha(float alpha)
+    private void SetObjectSize(float sizeRatio)
     {
         if (inhabitingObjects == null) return;
         
         foreach (SelectableObject obj in inhabitingObjects)
         {
-            obj.SetAlpha(alpha);
+            obj.SetSize(sizeRatio);
         }
     }
 
-    private void SetTileAlpha(float alpha)
+    private void SetTileSize(float sizeRatio)
     {
-        Color matColor = meshRenderer.material.color;
-        matColor.a = alpha;
-        meshRenderer.material.color = matColor;
+        transform.localScale = originalScale * sizeRatio;
     }
 }
