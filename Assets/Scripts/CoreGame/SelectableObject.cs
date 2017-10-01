@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SelectableObject : MonoBehaviour {
+public class SelectableObject : PlaceableObject {
 
     protected float selectionSize = 34.4f;
     protected Rigidbody body;
