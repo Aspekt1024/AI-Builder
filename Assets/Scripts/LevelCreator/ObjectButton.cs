@@ -9,6 +9,7 @@ public class ObjectButton : MonoBehaviour, IButton {
     private Coroutine animationRoutine;
 
     private GameObject wallObject;
+    private LevelCreator levelCreator;
 
     private enum States
     {
@@ -18,6 +19,7 @@ public class ObjectButton : MonoBehaviour, IButton {
 
     private void Start()
     {
+        levelCreator = FindObjectOfType<LevelCreator>();
         flashImage = GetComponent<Image>();
         wallObject = (GameObject)Resources.Load("Prefabs/Walls/Wall_0");
     }
@@ -71,7 +73,7 @@ public class ObjectButton : MonoBehaviour, IButton {
     public virtual void Clicked()
     {
         PlaceableObject obj = Instantiate(wallObject).GetComponent<PlaceableObject>();
-        LevelCreator.SetCurrentObject(obj);
+        levelCreator.SetCurrentObject(obj);
     }
 
     private IEnumerator ShowFlash()

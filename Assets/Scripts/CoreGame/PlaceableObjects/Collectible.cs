@@ -19,7 +19,7 @@ public class Collectible : SelectableObject, IGrabbable {
     
     public void PickedUp(IHolder grabber)
     {
-        Level.RemoveObjectFromTile(this);
+        levelScript.RemoveObjectFromTile(this);
         if (currentHolder != null)
         {
             currentHolder.DetachGrabbedObject();
@@ -30,7 +30,7 @@ public class Collectible : SelectableObject, IGrabbable {
 
     public void PutDown()
     {
-        Level.AddObjectToTile(this);
+        levelScript.AddObjectToTile(this);
         grabState = GrabState.PutDown;
         currentHolder = null;
         OnPlaced();

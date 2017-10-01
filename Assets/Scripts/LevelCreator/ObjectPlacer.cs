@@ -5,8 +5,12 @@ using UnityEngine;
 public class ObjectPlacer {
 
     private PlaceableObject currentObject;
+    private Level levelScript;
 
-    public ObjectPlacer() { }
+    public ObjectPlacer()
+    {
+        levelScript = Object.FindObjectOfType<Level>();
+    }
 
     public void Update()
     {
@@ -20,7 +24,6 @@ public class ObjectPlacer {
         {
             Vector3 snappedPosition = LevelGrid.GetSnappedPosition(hit.point);
             currentObject.transform.position = snappedPosition;
-
         }
     }
 
@@ -34,4 +37,46 @@ public class ObjectPlacer {
         currentObject = null;
     }
 
+
+    public void PlaceObjectAndRetainSelection(Vector2 position)
+    {
+        if (currentObject == null) return;
+
+        PlaceableObject originalObject = currentObject;
+        bool success = PlaceObject(position);
+        
+        if (success)
+        {
+            currentObject = Object.Instantiate(originalObject);
+            currentObject.name = originalObject.name;
+            currentObject.transform.SetParent(originalObject.transform.parent);
+        }
+    }
+    
+    public bool PlaceObject(Vector2 position)
+    {
+        if (currentObject == null) return false;
+
+        TileIndex tile = Floor.GetTileIndex(currentObject.transform.position);
+        if (levelScript.GetFloor().TileIsEmpty(tile))
+        {
+            if (currentObject.IsType<Wall>())
+            {
+                WallPlacer wallPlacer = new GameObject().AddComponent<WallPlacer>();
+                wallPlacer.PlaceWall((Wall)currentObject);
+            }
+            else
+            {
+                levelScript.GetFloor().AddObjectToTile(currentObject, currentObject.transform.position);
+            }
+
+            currentObject = null;
+            return true;
+        }
+        else
+        {
+            Debug.Log("Cannot place there!");
+            return false;
+        }
+    }
 }

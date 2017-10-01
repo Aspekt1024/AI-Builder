@@ -18,7 +18,7 @@ public class Tile : MonoBehaviour
 
     private Vector3 originalScale;
     private MeshRenderer meshRenderer;
-    private List<SelectableObject> inhabitingObjects = new List<SelectableObject>();
+    private List<PlaceableObject> inhabitingObjects = new List<PlaceableObject>();
 
     #region lifecycle
 
@@ -54,13 +54,46 @@ public class Tile : MonoBehaviour
 
     #endregion lifecycle
 
-    public void RemoveInhabitingObject(SelectableObject obj)
+    public bool IsEmpty()
+    {
+        return inhabitingObjects == null || inhabitingObjects.Count == 0;
+    }
+
+    public bool HasWall()
+    {
+        bool hasWall = false;
+        foreach (PlaceableObject obj in inhabitingObjects)
+        {
+            if (obj.IsType<Wall>())
+            {
+                hasWall = true;
+                break;
+            }
+        }
+        return hasWall;
+    }
+
+    public Wall GetWall()
+    {
+        Wall wall = null;
+        foreach (PlaceableObject obj in inhabitingObjects)
+        {
+            if (obj.IsType<Wall>())
+            {
+                wall = (Wall)obj;
+                break;
+            }
+        }
+        return wall;
+    }
+
+    public void RemoveInhabitingObject(PlaceableObject obj)
     {
         obj.SetSize(1f);
         inhabitingObjects.Remove(obj);
     }
 
-    public void AddInhabitingObject(SelectableObject obj)
+    public void AddInhabitingObject(PlaceableObject obj)
     {
         if (inhabitingObjects.Contains(obj)) return;
         inhabitingObjects.Add(obj);

@@ -5,26 +5,17 @@ using UnityEngine;
 public class LevelCreator : MonoBehaviour {
 
     private ObjectPlacer objectPlacer;
-
-    private static LevelCreator levelCreator;
+    private Level levelScript;
     
     private void Awake()
     {
-        if (levelCreator == null)
-        {
-            levelCreator = this;
-        }
-        else
-        {
-            Debug.LogError("Multiple instance of Level (script) found in scene.");
-        }
-        
         objectPlacer = new ObjectPlacer();
+        levelScript = FindObjectOfType<Level>();
     }
 
     private void Start ()
     {
-        Level.ShowAllTiles();
+        levelScript.ShowAllTiles();
 	}
 	
 	private void Update ()
@@ -32,9 +23,14 @@ public class LevelCreator : MonoBehaviour {
         objectPlacer.Update();
 	}
 
-    public static void SetCurrentObject(PlaceableObject obj)
+    public ObjectPlacer GetObjectPlacer()
+    {
+        return objectPlacer;
+    }
+
+    public void SetCurrentObject(PlaceableObject obj)
     {
         // TODO check states first
-        levelCreator.objectPlacer.SetCurrentObject(obj);
+        objectPlacer.SetCurrentObject(obj);
     }
 }

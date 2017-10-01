@@ -59,7 +59,14 @@ public class InputManager : MonoBehaviour {
         if (Input.GetMouseButtonUp(LEFT_MOUSE_BUTTON))
         {
             //mouseDownHeld = false;
-            gameController.LeftMouseUpReceived(Input.mousePosition);
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+            {
+                gameController.LeftMouseUpWithShiftReceived(Input.mousePosition);
+            }
+            else
+            {
+                gameController.LeftMouseUpReceived(Input.mousePosition);
+            }
         }
         else if (Input.GetMouseButtonDown(LEFT_MOUSE_BUTTON))
         {

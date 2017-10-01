@@ -46,14 +46,39 @@ public class Floor {
         }
     }
 
-    public void RemoveObjectFromTile(SelectableObject obj, TileIndex tile)
+    public void RemoveObjectFromTile(PlaceableObject obj, TileIndex tile)
     {
         tiles[tile.Row, tile.Col].RemoveInhabitingObject(obj);
     }
 
-    public void AddObjectToTile(SelectableObject obj, TileIndex tile)
+    public void AddObjectToTile(PlaceableObject obj, Vector3 position)
+    {
+        AddObjectToTile(obj, GetTileIndex(position));
+    }
+
+    public void AddObjectToTile(PlaceableObject obj, TileIndex tile)
     {
         tiles[tile.Row, tile.Col].AddInhabitingObject(obj);
+    }
+
+    public bool TileIsEmpty(TileIndex tile)
+    {
+        return tiles[tile.Row, tile.Col].IsEmpty();
+    }
+
+    public bool TileHasWall(TileIndex tile)
+    {
+        bool hasWall = false;
+        if ((tile.Row >= 0 && tile.Row < LevelGrid.ROOM_ROWS) && (tile.Col >= 0 && tile.Col < LevelGrid.ROOM_COLS))
+        {
+            hasWall = (tiles[tile.Row, tile.Col].HasWall());
+        }
+        return hasWall;
+    }
+
+    public Wall GetWallFromTile(TileIndex tile)
+    {
+        return tiles[tile.Row, tile.Col].GetWall();
     }
 
     public void SetupFloorAtPosition(Vector3 position)
@@ -70,13 +95,13 @@ public class Floor {
                 {
                     GameObject go = Object.Instantiate(Resources.Load<GameObject>("Prefabs/Selectables/Buildings/PowerPad"));
                     go.transform.position = tiles[r, c].transform.position;
-                    tiles[r, c].AddInhabitingObject(go.GetComponent<SelectableObject>());
+                    tiles[r, c].AddInhabitingObject(go.GetComponent<PlaceableObject>());
                 }
                 if (c == 8 && r == 5)
                 {
                     GameObject go = Object.Instantiate(Resources.Load<GameObject>("Prefabs/Selectables/Collectibles/ResourceCube"));
                     go.transform.position = tiles[r, c].transform.position;
-                    tiles[r, c].AddInhabitingObject(go.GetComponent<SelectableObject>());
+                    tiles[r, c].AddInhabitingObject(go.GetComponent<PlaceableObject>());
                 }
             }
         }

@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2017
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI Builder", "AI Builder.csproj", "{5DA20B7B-1AEA-1304-BAE8-399A51659302}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AI Builder.Editor", "AI Builder.Editor.csproj", "{84823EEC-B3D4-F75D-D5CD-9593E01BEDFE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,10 +13,6 @@ Global
 		{5DA20B7B-1AEA-1304-BAE8-399A51659302}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5DA20B7B-1AEA-1304-BAE8-399A51659302}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5DA20B7B-1AEA-1304-BAE8-399A51659302}.Release|Any CPU.Build.0 = Release|Any CPU
-		{84823EEC-B3D4-F75D-D5CD-9593E01BEDFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{84823EEC-B3D4-F75D-D5CD-9593E01BEDFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{84823EEC-B3D4-F75D-D5CD-9593E01BEDFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{84823EEC-B3D4-F75D-D5CD-9593E01BEDFE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

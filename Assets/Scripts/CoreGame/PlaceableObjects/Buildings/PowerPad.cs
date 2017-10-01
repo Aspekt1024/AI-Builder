@@ -49,7 +49,7 @@ public class PowerPad : Building, IReceptor
         {
             grabbedObject = grabbableObject;
             grabbedObject.PickedUp(this);
-            Level.AddObjectToTile((SelectableObject)grabbedObject);
+            levelScript.AddObjectToTile((SelectableObject)grabbedObject);
 
             state = States.Powered;
             return true;

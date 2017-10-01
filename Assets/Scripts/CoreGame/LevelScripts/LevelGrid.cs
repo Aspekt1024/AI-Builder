@@ -10,20 +10,15 @@ public static class LevelGrid {
     public const int ROOM_COLS = 11;
     public const float TILE_SIZE = 2f;
     
-    public static Vector3 GetLevelPos(int level)
-    {
-        int row = Mathf.FloorToInt((level - 1) / LEVEL_COLS);
-        int col = (level - 1 - row * LEVEL_COLS);
-
-        return new Vector3(row * ROOM_ROWS * TILE_SIZE, 0f, col * ROOM_COLS * TILE_SIZE);
-    }
-
     public static Vector3 GetSnappedPosition(Vector3 pos)
     {
-        float snappedXPos = Mathf.Round(pos.x / TILE_SIZE) * TILE_SIZE;
+        float snappedXPos = Mathf.Clamp(pos.x, -TILE_SIZE * (ROOM_COLS - 1) / 2, TILE_SIZE * (ROOM_COLS - 1) / 2);
+        float snappedZPos = Mathf.Clamp(pos.z, -TILE_SIZE * (ROOM_ROWS - 1) / 2, TILE_SIZE * (ROOM_ROWS - 1) / 2);
         float snappedYPos = pos.y;
-        float snappedZPos = Mathf.Round(pos.z / TILE_SIZE) * TILE_SIZE;
 
+        snappedXPos = Mathf.Round(snappedXPos / TILE_SIZE) * TILE_SIZE;
+        snappedZPos = Mathf.Round(snappedZPos / TILE_SIZE) * TILE_SIZE;
+    
         return new Vector3(snappedXPos, snappedYPos, snappedZPos);
     }
 

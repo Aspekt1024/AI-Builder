@@ -23,6 +23,7 @@ public abstract class GameController : MonoBehaviour {
 
     public abstract void LeftMouseDownReceived(Vector2 position);
     public abstract void LeftMouseUpReceived(Vector2 position);
+    public abstract void LeftMouseUpWithShiftReceived(Vector2 position);
 
     public virtual void CheckMouseover(Vector2 position) { }
 }

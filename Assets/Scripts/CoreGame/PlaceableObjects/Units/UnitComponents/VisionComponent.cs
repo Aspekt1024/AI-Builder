@@ -18,6 +18,8 @@ public class VisionComponent : MonoBehaviour, IVision {
     private bool hasVisionMemory;
     private bool levelScanned;
 
+    private Level levelScript;
+
     private void Awake()
     {
         visibleTiles = new List<TileIndex>();
@@ -27,13 +29,15 @@ public class VisionComponent : MonoBehaviour, IVision {
         hasVisionMemory = false;
         levelScanned = false;
         hasTotalVision = true;
+
+        levelScript = FindObjectOfType<Level>();
     }
 
     public bool Look()
     {
         GetVisibleTiles();
-        Level.ShowTiles(tilesToShow);
-        Level.HideTiles(tilesToHide);
+        levelScript.ShowTiles(tilesToShow);
+        levelScript.HideTiles(tilesToHide);
         visibleTiles = tilesToShow;
         return true;
     }

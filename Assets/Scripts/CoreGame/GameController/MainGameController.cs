@@ -24,6 +24,11 @@ public class MainGameController : GameController {
 
     }
 
+    public override void LeftMouseUpWithShiftReceived(Vector2 position)
+    {
+
+    }
+
     public override void CheckMouseover(Vector2 position)
     {
         if (state == States.Normal)

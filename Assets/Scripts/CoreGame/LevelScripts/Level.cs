@@ -3,26 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Level : MonoBehaviour {
-
-    private static Level levelScript;
+    
     private Floor floor;
 
     private int levelNum;
-    private Vector3 levelCenter;
     
-	private void Awake () {
-
-        if (levelScript == null)
-        {
-            levelScript = this;
-        }
-        else
-        {
-            Debug.LogError("Multiple instance of Level (script) found in scene.");
-        }
-
+	private void Awake ()
+    {
         levelNum = 1;
-        levelCenter = LevelGrid.GetLevelPos(levelNum);
         LoadFloor();
     }
     
@@ -32,47 +20,51 @@ public class Level : MonoBehaviour {
         floor.SetupFloorAtPosition(Vector3.zero);
     }
 
-    public static void RemoveObjectFromTile(SelectableObject obj)
+    public void RemoveObjectFromTile(SelectableObject obj)
     {
         TileIndex tile = GetTileIndex(obj.transform.position);
-        levelScript.floor.RemoveObjectFromTile(obj, tile);
+        floor.RemoveObjectFromTile(obj, tile);
     }
 
-    public static void AddObjectToTile(SelectableObject obj)
+    public Floor GetFloor()
+    {
+        return floor;
+    }
+
+    public void AddObjectToTile(SelectableObject obj)
     {
         TileIndex tile = GetTileIndex(obj.transform.position);
-        levelScript.floor.AddObjectToTile(obj, tile);
+        floor.AddObjectToTile(obj, tile);
     }
 
-    public static void ShowAllTiles()
+    public void ShowAllTiles()
     {
-        levelScript.floor.ShowAll();
+        floor.ShowAll();
     }
 
-    public static void ShowTiles(List<TileIndex> tiles)
+    public void ShowTiles(List<TileIndex> tiles)
     {
         foreach(TileIndex tile in tiles)
         {
-            levelScript.floor.ShowTile(tile);
+            floor.ShowTile(tile);
         }
     }
 
-    public static void HideTiles(List<TileIndex> tiles)
+    public void HideTiles(List<TileIndex> tiles)
     {
         foreach(TileIndex tile in tiles)
         {
-            levelScript.floor.HideTile(tile);
+            floor.HideTile(tile);
         }
     }
 
-    private static TileIndex GetTileIndex(Vector3 position)
+    private TileIndex GetTileIndex(Vector3 position)
     {
         return GetTileIndex(new Vector2(position.x, position.z));
     }
 
-    private static TileIndex GetTileIndex(Vector2 position)
+    private TileIndex GetTileIndex(Vector2 position)
     {
-        position -= new Vector2(levelScript.levelCenter.x, levelScript.levelCenter.z);
         return Floor.GetTileIndex(position);
     }
 }
