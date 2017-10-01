@@ -18,4 +18,13 @@ public static class LevelGrid {
         return new Vector3(row * ROOM_ROWS * TILE_SIZE, 0f, col * ROOM_COLS * TILE_SIZE);
     }
 
+    public static Vector3 GetSnappedPosition(Vector3 pos)
+    {
+        float snappedXPos = Mathf.Round(pos.x / TILE_SIZE) * TILE_SIZE;
+        float snappedYPos = pos.y;
+        float snappedZPos = Mathf.Round(pos.z / TILE_SIZE) * TILE_SIZE;
+
+        return new Vector3(snappedXPos, snappedYPos, snappedZPos);
+    }
+
 }

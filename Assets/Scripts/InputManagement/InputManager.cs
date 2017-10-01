@@ -8,6 +8,8 @@ using UnityEngine.EventSystems;
 /// </summary>
 public class InputManager : MonoBehaviour {
 
+    private GameController gameController;
+
     private enum States
     {
         None, Enabled, Disabled
@@ -45,6 +47,11 @@ public class InputManager : MonoBehaviour {
         }
     }
 
+    public void Init(GameController controller)
+    {
+        gameController = controller;
+    }
+
     private void ProcessInput()
     {
         if (EventSystem.current.IsPointerOverGameObject()) return;
@@ -52,16 +59,16 @@ public class InputManager : MonoBehaviour {
         if (Input.GetMouseButtonUp(LEFT_MOUSE_BUTTON))
         {
             //mouseDownHeld = false;
-            GameController.LeftMouseUpReceived(Input.mousePosition);
+            gameController.LeftMouseUpReceived(Input.mousePosition);
         }
         else if (Input.GetMouseButtonDown(LEFT_MOUSE_BUTTON))
         {
             //mouseDownHeld = true;
-            GameController.LeftMouseDownReceived(Input.mousePosition);
+            gameController.LeftMouseDownReceived(Input.mousePosition);
         }
         else
         {
-            GameController.CheckMouseover(Input.mousePosition);
+            gameController.CheckMouseover(Input.mousePosition);
         }
     }
 }

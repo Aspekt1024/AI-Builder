@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CommandQueue : MonoBehaviour {
 
+    private MessageBox messageBox;
+    
     // TODO make tags/attributes for each IObjectAttribute
     // then automatically populate this and call commands directly,
     // based on the object this class is attached to
@@ -19,6 +21,7 @@ public class CommandQueue : MonoBehaviour {
 
     private void Start()
     {
+        messageBox = FindObjectOfType<MessageBox>();
         queueIndex = 0;
     }
 
@@ -32,14 +35,14 @@ public class CommandQueue : MonoBehaviour {
         if (commandQueue == null) return false;
         if (commandQueue.Count == queueIndex)
         {
-            MessageBox.ClearStepIndicator();
+            messageBox.ClearStepIndicator();
             obj.QueueComplete();
             queueIndex = 0;
             return false;
         }
 
         Commands cmd = commandQueue[queueIndex];
-        MessageBox.SetStepIndicator(queueIndex);
+        messageBox.SetStepIndicator(queueIndex);
         queueIndex++;
         
         switch (cmd)
@@ -74,8 +77,8 @@ public class CommandQueue : MonoBehaviour {
         else
         {
             commandQueue.Add(command);
-            MessageBox.SetTextFromQueue(commandQueue);
-            MessageBox.SetMemoryInidcator(MaxCommands - commandQueue.Count, MaxCommands);
+            messageBox.SetTextFromQueue(commandQueue);
+            messageBox.SetMemoryInidcator(MaxCommands - commandQueue.Count, MaxCommands);
             return true;
         }
     }
@@ -89,8 +92,8 @@ public class CommandQueue : MonoBehaviour {
     public bool ClearCommands()
     {
         commandQueue = new List<Commands>();
-        MessageBox.SetTextFromQueue(commandQueue);
-        MessageBox.SetMemoryInidcator(MaxCommands - commandQueue.Count, MaxCommands);
+        messageBox.SetTextFromQueue(commandQueue);
+        messageBox.SetMemoryInidcator(MaxCommands - commandQueue.Count, MaxCommands);
         return true;
     }
 

@@ -13,14 +13,15 @@ public class ObjectPlacer {
         if (currentObject == null) return;
         
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Debug.Log(ray.origin + " " + ray.direction);
-
         RaycastHit hit = new RaycastHit();
-        Physics.Raycast(ray, out hit, 1000000f, 1 << LayerMask.NameToLayer("Terrain"));
+        Physics.Raycast(ray, out hit, 100f, 1 << LayerMask.NameToLayer("Terrain"));
 
+        if (hit.collider != null)
+        {
+            Vector3 snappedPosition = LevelGrid.GetSnappedPosition(hit.point);
+            currentObject.transform.position = snappedPosition;
 
-        Debug.Log(currentObject + " " + hit.point);
-        currentObject.transform.position = hit.point;
+        }
     }
 
     public void SetCurrentObject(PlaceableObject obj)
