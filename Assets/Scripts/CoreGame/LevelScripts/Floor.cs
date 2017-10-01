@@ -15,11 +15,13 @@ public class Floor {
     {
         GameObject tilePrefab = Resources.Load<GameObject>("Prefabs/Tile");
         tiles = new Tile[LevelGrid.ROOM_ROWS, LevelGrid.ROOM_COLS];
+        Transform tilesParent = new GameObject("Tiles").transform;
         for (int r = 0; r < LevelGrid.ROOM_ROWS; r++)
         {
             for (int c = 0; c < LevelGrid.ROOM_COLS; c++)
             {
                 tiles[r, c] = Object.Instantiate(tilePrefab).GetComponent<Tile>();
+                tiles[r, c].transform.SetParent(tilesParent);
             }
         }
     }
@@ -34,6 +36,14 @@ public class Floor {
     {
         if (index.Row < 0 || index.Col < 0 || index.Row >= LevelGrid.ROOM_ROWS || index.Col >= LevelGrid.ROOM_COLS) return;
         tiles[index.Row, index.Col].Show();
+    }
+
+    public void ShowAll()
+    {
+        foreach (Tile tile in tiles)
+        {
+            tile.Show();
+        }
     }
 
     public void RemoveObjectFromTile(SelectableObject obj, TileIndex tile)

@@ -10,8 +10,6 @@ public class Level : MonoBehaviour {
     private int levelNum;
     private Vector3 levelCenter;
     
-
-
 	private void Awake () {
 
         if (levelScript == null)
@@ -44,6 +42,11 @@ public class Level : MonoBehaviour {
     {
         TileIndex tile = GetTileIndex(obj.transform.position);
         levelScript.floor.AddObjectToTile(obj, tile);
+    }
+
+    public static void ShowAllTiles()
+    {
+        levelScript.floor.ShowAll();
     }
 
     public static void ShowTiles(List<TileIndex> tiles)
