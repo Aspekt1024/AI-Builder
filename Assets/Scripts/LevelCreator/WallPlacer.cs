@@ -11,11 +11,11 @@ public class WallPlacer : MonoBehaviour {
     private GameObject Wall3;
     private GameObject Wall4;
 
-    private Floor floor;
+    private LevelGrid floor;
 
     private void Awake()
     {
-        floor = FindObjectOfType<Level>().GetFloor();
+        floor = FindObjectOfType<Level>().Grid;
         Wall0 = Resources.Load<GameObject>("Prefabs/Walls/Wall_0");
         Wall1 = Resources.Load<GameObject>("Prefabs/Walls/Wall_1");
         Wall2Corner = Resources.Load<GameObject>("Prefabs/Walls/Wall_2_corner");
@@ -26,12 +26,12 @@ public class WallPlacer : MonoBehaviour {
 
     public void PlaceWall(Wall obj)
     {
-        TileIndex tile = Floor.GetTileIndex(obj.transform.position);
+        CellIndex tile = floor.GetCellIndex(obj.transform.position);
 
-        bool northWall = floor.TileHasWall(new TileIndex(tile.Row + 1, tile.Col));
-        bool southWall = floor.TileHasWall(new TileIndex(tile.Row - 1, tile.Col));
-        bool eastWall = floor.TileHasWall(new TileIndex(tile.Row, tile.Col + 1));
-        bool westWall = floor.TileHasWall(new TileIndex(tile.Row, tile.Col - 1));
+        bool northWall = floor.CellHasWall(new CellIndex(tile.Row + 1, tile.Col));
+        bool southWall = floor.CellHasWall(new CellIndex(tile.Row - 1, tile.Col));
+        bool eastWall = floor.CellHasWall(new CellIndex(tile.Row, tile.Col + 1));
+        bool westWall = floor.CellHasWall(new CellIndex(tile.Row, tile.Col - 1));
         
         int numConnections = 0;
         if (northWall) numConnections++;
@@ -51,32 +51,32 @@ public class WallPlacer : MonoBehaviour {
 
         if (northWall)
         {
-            UpdateWall(new TileIndex(tile.Row + 1, tile.Col));
+            UpdateWall(new CellIndex(tile.Row + 1, tile.Col));
         }
         if (southWall)
         {
-            UpdateWall(new TileIndex(tile.Row - 1, tile.Col));
+            UpdateWall(new CellIndex(tile.Row - 1, tile.Col));
         }
 
         if (eastWall)
         {
-            UpdateWall(new TileIndex(tile.Row, tile.Col + 1));
+            UpdateWall(new CellIndex(tile.Row, tile.Col + 1));
         }
 
         if (westWall)
         {
-            UpdateWall(new TileIndex(tile.Row, tile.Col - 1));
+            UpdateWall(new CellIndex(tile.Row, tile.Col - 1));
         }
     }
 
-    private void UpdateWall(TileIndex tile)
+    private void UpdateWall(CellIndex tile)
     {
-        Wall wall = floor.GetWallFromTile(tile);
+        Wall wall = floor.GetWallFromCell(tile);
         
-        bool northWall = floor.TileHasWall(new TileIndex(tile.Row + 1, tile.Col));
-        bool southWall = floor.TileHasWall(new TileIndex(tile.Row - 1, tile.Col));
-        bool eastWall = floor.TileHasWall(new TileIndex(tile.Row, tile.Col + 1));
-        bool westWall = floor.TileHasWall(new TileIndex(tile.Row, tile.Col - 1));
+        bool northWall = floor.CellHasWall(new CellIndex(tile.Row + 1, tile.Col));
+        bool southWall = floor.CellHasWall(new CellIndex(tile.Row - 1, tile.Col));
+        bool eastWall = floor.CellHasWall(new CellIndex(tile.Row, tile.Col + 1));
+        bool westWall = floor.CellHasWall(new CellIndex(tile.Row, tile.Col - 1));
 
         int numConnections = 0;
         if (northWall) numConnections++;
@@ -85,7 +85,7 @@ public class WallPlacer : MonoBehaviour {
         if (westWall) numConnections++;
 
         CreateWall(wall, numConnections, northWall, southWall, eastWall, westWall);
-        floor.RemoveObjectFromTile(wall, tile);
+        floor.RemoveObjectFromCell(wall, tile);
         Destroy(wall.gameObject);
     }
 
@@ -122,7 +122,7 @@ public class WallPlacer : MonoBehaviour {
         wall.transform.position = original.transform.position;
         wall.transform.SetParent(original.transform.parent);
 
-        floor.AddObjectToTile(wall, wall.transform.position);
+        floor.AddObjectToCell(wall, wall.transform.position);
     }
 
     private void RotateTWall(Wall wall, bool north, bool south, bool east, bool west)

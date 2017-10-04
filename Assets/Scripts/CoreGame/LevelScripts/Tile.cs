@@ -2,32 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tile : MonoBehaviour
-{
+public class Tile : PlaceableObject {
+
+    private Cell cell;
+    private float transitionTimer;
+    private const float ShowDuration = 0.4f;
+    private const float HideDuration = 1f;
+
+    private MeshRenderer meshRenderer;
+
     private enum States
     {
         Hidden, Visible, Showing, Hiding, ShowBeforeHiding
     }
     private States state;
-    private Vector3 startPosition;
-    private Vector3 targetPosition;
-    private float transitionTimer;
-    private const float VerticalDist = 2f;
-    private const float ShowDuration = 0.4f;
-    private const float HideDuration = 1f;
-
-    private Vector3 originalScale;
-    private MeshRenderer meshRenderer;
-    private List<PlaceableObject> inhabitingObjects = new List<PlaceableObject>();
-
-    #region lifecycle
-
-    private void Awake()
+    
+    public void SetupTile(Cell cellParent, Transform tilesParent, Vector3 tilePos)
     {
-        state = States.Hidden;
+        transform.SetParent(tilesParent);
+        transform.position = tilePos;
+
         meshRenderer = GetComponent<MeshRenderer>();
-        originalScale = transform.localScale;
         meshRenderer.enabled = false;
+
+        cell = cellParent;
+        state = States.Hidden;
     }
 
     private void Update()
@@ -52,69 +51,9 @@ public class Tile : MonoBehaviour
         }
     }
 
-    #endregion lifecycle
-
-    public bool IsEmpty()
-    {
-        return inhabitingObjects == null || inhabitingObjects.Count == 0;
-    }
-
-    public bool HasWall()
-    {
-        bool hasWall = false;
-        foreach (PlaceableObject obj in inhabitingObjects)
-        {
-            if (obj.IsType<Wall>())
-            {
-                hasWall = true;
-                break;
-            }
-        }
-        return hasWall;
-    }
-
-    public Wall GetWall()
-    {
-        Wall wall = null;
-        foreach (PlaceableObject obj in inhabitingObjects)
-        {
-            if (obj.IsType<Wall>())
-            {
-                wall = (Wall)obj;
-                break;
-            }
-        }
-        return wall;
-    }
-
-    public void RemoveInhabitingObject(PlaceableObject obj)
-    {
-        obj.SetSize(1f);
-        inhabitingObjects.Remove(obj);
-    }
-
-    public void AddInhabitingObject(PlaceableObject obj)
-    {
-        if (inhabitingObjects.Contains(obj)) return;
-        inhabitingObjects.Add(obj);
-
-        if (state == States.Hidden || state == States.Hiding)
-        {
-            obj.SetSize(0.01f);
-        }
-    }
-
     public void Show()
     {
         if (state == States.Showing || state == States.Visible) return;
-        
-        startPosition = targetPosition = transform.position;
-        startPosition.y = -VerticalDist;
-        targetPosition.y = 0f;
-
-        transform.position = startPosition;
-        SetObjectSize(0f);
-        SetTileSize(0f);
 
         transitionTimer = 0f;
         meshRenderer.enabled = true;
@@ -124,7 +63,7 @@ public class Tile : MonoBehaviour
     public void Hide()
     {
         if (state == States.Hidden || state == States.Hiding || state == States.ShowBeforeHiding) return;
-        
+
         if (state == States.Showing)
         {
             state = States.ShowBeforeHiding;
@@ -134,16 +73,16 @@ public class Tile : MonoBehaviour
         {
             state = States.Hiding;
         }
-        
+
         transitionTimer = 0f;
     }
 
     private void MoveToVisiblePosition()
     {
         transitionTimer += Time.deltaTime;
-        transform.position = Vector3.Lerp(startPosition, targetPosition, transitionTimer / ShowDuration);
-        SetObjectSize(transitionTimer / ShowDuration);
-        SetTileSize(transitionTimer / ShowDuration);
+
+        cell.SetObjectSize(transitionTimer / ShowDuration);
+        SetSize(transitionTimer / ShowDuration);
 
         if (transitionTimer >= ShowDuration)
         {
@@ -164,28 +103,13 @@ public class Tile : MonoBehaviour
         transitionTimer += Time.deltaTime;
 
         float sizeRatio = 1 - transitionTimer / ShowDuration;
-        SetObjectSize(sizeRatio);
-        SetTileSize(sizeRatio);
+        cell.SetObjectSize(sizeRatio);
+        SetSize(sizeRatio);
 
         if (transitionTimer >= HideDuration)
         {
             meshRenderer.enabled = false;
             state = States.Hidden;
         }
-    }
-    
-    private void SetObjectSize(float sizeRatio)
-    {
-        if (inhabitingObjects == null) return;
-        
-        foreach (SelectableObject obj in inhabitingObjects)
-        {
-            obj.SetSize(sizeRatio);
-        }
-    }
-
-    private void SetTileSize(float sizeRatio)
-    {
-        transform.localScale = originalScale * sizeRatio;
     }
 }

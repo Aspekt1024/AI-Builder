@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class VisionComponent : MonoBehaviour, IVision {
     
-    private List<TileIndex> visibleTiles;
-    private List<TileIndex> tilesToShow;
-    private List<TileIndex> tilesToHide;
+    private List<CellIndex> visibleTiles;
+    private List<CellIndex> tilesToShow;
+    private List<CellIndex> tilesToHide;
 
     private bool hasSelfVision;
     private bool hasForwardVision;
@@ -22,7 +22,7 @@ public class VisionComponent : MonoBehaviour, IVision {
 
     private void Awake()
     {
-        visibleTiles = new List<TileIndex>();
+        visibleTiles = new List<CellIndex>();
 
         hasSelfVision = true;
         hasForwardVision = true;
@@ -44,8 +44,8 @@ public class VisionComponent : MonoBehaviour, IVision {
 
     private void GetVisibleTiles()
     {
-        TileIndex currentTile = Floor.GetTileIndex(transform.position);
-        tilesToShow = new List<TileIndex>();
+        CellIndex currentTile = levelScript.Grid.GetCellIndex(transform.position);
+        tilesToShow = new List<CellIndex>();
 
         if (hasTotalVision)
         {
@@ -62,20 +62,20 @@ public class VisionComponent : MonoBehaviour, IVision {
         }
         if (hasForwardVision)
         {
-            tilesToShow.Add(Floor.GetTileIndex(transform.position + transform.forward * LevelGrid.TILE_SIZE));
+            tilesToShow.Add(levelScript.Grid.GetCellIndex(transform.position + transform.forward * GridProperties.TILE_SIZE));
         }
         if (hasCrossVision)
         {
-            tilesToShow.Add(new TileIndex(currentTile.Row - 1, currentTile.Col));
-            tilesToShow.Add(new TileIndex(currentTile.Row + 1, currentTile.Col));
-            tilesToShow.Add(new TileIndex(currentTile.Row, currentTile.Col - 1));
-            tilesToShow.Add(new TileIndex(currentTile.Row, currentTile.Col + 1));
+            tilesToShow.Add(new CellIndex(currentTile.Row - 1, currentTile.Col));
+            tilesToShow.Add(new CellIndex(currentTile.Row + 1, currentTile.Col));
+            tilesToShow.Add(new CellIndex(currentTile.Row, currentTile.Col - 1));
+            tilesToShow.Add(new CellIndex(currentTile.Row, currentTile.Col + 1));
         }
 
-        tilesToHide = new List<TileIndex>();
+        tilesToHide = new List<CellIndex>();
         if (hasVisionMemory) return;
 
-        foreach(TileIndex tile in visibleTiles)
+        foreach(CellIndex tile in visibleTiles)
         {
             if (!tilesToShow.Contains(tile))
             {
@@ -86,13 +86,13 @@ public class VisionComponent : MonoBehaviour, IVision {
 
     private void ShowAllTiles()
     {
-        for (int col = 0; col < LevelGrid.ROOM_COLS; col++)
+        for (int col = 0; col < GridProperties.ROOM_COLS; col++)
         {
-            for (int row = 0; row < LevelGrid.ROOM_ROWS; row++)
+            for (int row = 0; row < GridProperties.ROOM_ROWS; row++)
             {
-                tilesToShow.Add(new TileIndex(row, col));
+                tilesToShow.Add(new CellIndex(row, col));
             }
         }
-        tilesToHide = new List<TileIndex>();
+        tilesToHide = new List<CellIndex>();
     }
 }

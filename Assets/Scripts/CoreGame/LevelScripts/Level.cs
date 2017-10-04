@@ -3,68 +3,67 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Level : MonoBehaviour {
-    
-    private Floor floor;
 
+    public LevelGrid Grid
+    {
+        get { return grid; }
+    }
+
+    private LevelGrid grid;
     private int levelNum;
     
 	private void Awake ()
     {
         levelNum = 1;
-        LoadFloor();
+        LoadGrid();
     }
     
-    private void LoadFloor()
+    private void LoadGrid()
     {
-        floor = new Floor();
-        floor.SetupFloorAtPosition(Vector3.zero);
+        grid = new LevelGrid();
+        grid.Init(levelCenterPosition:Vector3.zero);
     }
 
     public void RemoveObjectFromTile(SelectableObject obj)
     {
-        TileIndex tile = GetTileIndex(obj.transform.position);
-        floor.RemoveObjectFromTile(obj, tile);
-    }
-
-    public Floor GetFloor()
-    {
-        return floor;
+        CellIndex tile = GetTileIndex(obj.transform.position);
+        grid.RemoveObjectFromCell(obj, tile);
     }
 
     public void AddObjectToTile(SelectableObject obj)
     {
-        TileIndex tile = GetTileIndex(obj.transform.position);
-        floor.AddObjectToTile(obj, tile);
+        CellIndex tile = GetTileIndex(obj.transform.position);
+        grid.AddObjectToTile(obj, tile);
     }
 
     public void ShowAllTiles()
     {
-        floor.ShowAll();
+        grid.ShowAllCells();
     }
 
-    public void ShowTiles(List<TileIndex> tiles)
+    public void ShowTiles(List<CellIndex> tiles)
     {
-        foreach(TileIndex tile in tiles)
+        foreach(CellIndex tile in tiles)
         {
-            floor.ShowTile(tile);
+            grid.ShowCell(tile);
         }
     }
 
-    public void HideTiles(List<TileIndex> tiles)
+    public void HideTiles(List<CellIndex> tiles)
     {
-        foreach(TileIndex tile in tiles)
+        foreach(CellIndex tile in tiles)
         {
-            floor.HideTile(tile);
+            grid.HideCell(tile);
         }
     }
 
-    private TileIndex GetTileIndex(Vector3 position)
+    private CellIndex GetTileIndex(Vector3 position)
     {
         return GetTileIndex(new Vector2(position.x, position.z));
     }
 
-    private TileIndex GetTileIndex(Vector2 position)
+    private CellIndex GetTileIndex(Vector2 position)
     {
-        return Floor.GetTileIndex(position);
+        return grid.GetCellIndex(position);
     }
 }

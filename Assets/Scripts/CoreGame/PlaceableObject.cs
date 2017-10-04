@@ -1,25 +1,30 @@
 ﻿using System;
 using UnityEngine;
 
+[Serializable]
 public class PlaceableObject : MonoBehaviour {
 
     protected Vector3 originalScale;
+    
+    private enum States
+    {
+        None, Placed, Held
+    }
+    private States state;
+
+#region lifecycle
 
     private void Awake()
     {
         originalScale = transform.localScale;
+
         Init();
     }
 
     protected virtual void Init() { }
 
-    private enum States
-    {
-        None, Placed, Held
-    }
-
-    private States state;
-
+#endregion
+    
     public void SetHeld()
     {
         state = States.Held;
@@ -50,4 +55,6 @@ public class PlaceableObject : MonoBehaviour {
         }
         return GetType().Equals(typeof(T)) || GetType().IsSubclassOf(typeof(T));
     }
+
+
 }

@@ -22,7 +22,7 @@ public class ObjectPlacer {
 
         if (hit.collider != null)
         {
-            Vector3 snappedPosition = LevelGrid.GetSnappedPosition(hit.point);
+            Vector3 snappedPosition = GridProperties.GetSnappedPosition(hit.point);
             currentObject.transform.position = snappedPosition;
         }
     }
@@ -57,8 +57,8 @@ public class ObjectPlacer {
     {
         if (currentObject == null) return false;
 
-        TileIndex tile = Floor.GetTileIndex(currentObject.transform.position);
-        if (levelScript.GetFloor().TileIsEmpty(tile))
+        CellIndex tile = levelScript.Grid.GetCellIndex(currentObject.transform.position);
+        if (levelScript.Grid.CellIsEmpty(tile))
         {
             if (currentObject.IsType<Wall>())
             {
@@ -67,7 +67,7 @@ public class ObjectPlacer {
             }
             else
             {
-                levelScript.GetFloor().AddObjectToTile(currentObject, currentObject.transform.position);
+                levelScript.Grid.AddObjectToCell(currentObject, currentObject.transform.position);
             }
 
             currentObject = null;
