@@ -15,7 +15,7 @@ public class Cell
 
     [SerializeField]
     private bool isEnabled;
-    private List<PlaceableObject> inhabitingObjects = new List<PlaceableObject>();
+    private List<PlaceableBehaviour> inhabitingObjects = new List<PlaceableBehaviour>();
 
     private static GameObject tilePrefab;
     private static Transform tilesParent;
@@ -41,7 +41,7 @@ public class Cell
 
     #endregion lifecycle
 
-    public List<PlaceableObject> InhabitingObjects
+    public List<PlaceableBehaviour> InhabitingObjects
     {
         get { return inhabitingObjects; }
     }
@@ -54,7 +54,7 @@ public class Cell
     public bool HasWall()
     {
         bool hasWall = false;
-        foreach (PlaceableObject obj in inhabitingObjects)
+        foreach (PlaceableBehaviour obj in inhabitingObjects)
         {
             if (obj.IsType<Wall>())
             {
@@ -68,7 +68,7 @@ public class Cell
     public Wall GetWall()
     {
         Wall wall = null;
-        foreach (PlaceableObject obj in inhabitingObjects)
+        foreach (PlaceableBehaviour obj in inhabitingObjects)
         {
             if (obj.IsType<Wall>())
             {
@@ -79,20 +79,20 @@ public class Cell
         return wall;
     }
 
-    public void RemoveInhabitingObject(PlaceableObject obj)
+    public void RemoveInhabitingObject(PlaceableBehaviour obj)
     {
-        obj.SetSize(1f);
+        obj.Object.SetSize(1f);
         inhabitingObjects.Remove(obj);
     }
 
-    public void AddInhabitingObject(PlaceableObject obj)
+    public void AddInhabitingObject(PlaceableBehaviour obj)
     {
         if (inhabitingObjects.Contains(obj)) return;
         inhabitingObjects.Add(obj);
 
         if (state == States.Hidden)
         {
-            obj.SetSize(0.01f);
+            obj.Object.SetSize(0.01f);
         }
     }
 
@@ -100,7 +100,6 @@ public class Cell
     {
         if (state == States.Visible) return;
         
-        // TODO fix coupling issue here - Cell and Tile are strongly coupled
         SetObjectSize(0f);
         tile.Show();
 
@@ -117,13 +116,11 @@ public class Cell
 
     public void SetObjectSize(float sizeRatio)
     {
-        tile.SetSize(0f);
-
         if (inhabitingObjects == null) return;
 
-        foreach (SelectableObject obj in inhabitingObjects)
+        foreach (PlaceableBehaviour obj in inhabitingObjects)
         {
-            obj.SetSize(sizeRatio);
+            obj.Object.SetSize(sizeRatio);
         }
     }
 }

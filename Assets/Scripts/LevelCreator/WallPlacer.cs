@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WallPlacer : MonoBehaviour {
 
-    private GameObject Wall0;
+    //private GameObject Wall0;
     private GameObject Wall1;
     private GameObject Wall2Corner;
     private GameObject Wall2Straight;
@@ -16,7 +16,7 @@ public class WallPlacer : MonoBehaviour {
     private void Awake()
     {
         floor = FindObjectOfType<Level>().Grid;
-        Wall0 = Resources.Load<GameObject>("Prefabs/Walls/Wall_0");
+        //Wall0 = Resources.Load<GameObject>("Prefabs/Walls/Wall_0");   // Currently the default for walls in the editor
         Wall1 = Resources.Load<GameObject>("Prefabs/Walls/Wall_1");
         Wall2Corner = Resources.Load<GameObject>("Prefabs/Walls/Wall_2_corner");
         Wall2Straight = Resources.Load<GameObject>("Prefabs/Walls/Wall_2_straight");

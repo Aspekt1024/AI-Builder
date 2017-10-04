@@ -24,15 +24,15 @@ public class Level : MonoBehaviour {
         grid.Init(levelCenterPosition:Vector3.zero);
     }
 
-    public void RemoveObjectFromTile(SelectableObject obj)
+    public void RemoveObjectFromTile(PlaceableBehaviour obj)
     {
-        CellIndex tile = GetTileIndex(obj.transform.position);
+        CellIndex tile = GetTileIndex(obj.Object.transform.position);
         grid.RemoveObjectFromCell(obj, tile);
     }
 
-    public void AddObjectToTile(SelectableObject obj)
+    public void AddObjectToTile(PlaceableBehaviour obj)
     {
-        CellIndex tile = GetTileIndex(obj.transform.position);
+        CellIndex tile = GetTileIndex(obj.Object.transform.position);
         grid.AddObjectToTile(obj, tile);
     }
 

@@ -15,8 +15,8 @@ public class Tile : PlaceableObject {
     {
         Hidden, Visible, Showing, Hiding, ShowBeforeHiding
     }
-    private States state;
-    
+    private States visibilityState;
+
     public void SetupTile(Cell cellParent, Transform tilesParent, Vector3 tilePos)
     {
         transform.SetParent(tilesParent);
@@ -26,12 +26,12 @@ public class Tile : PlaceableObject {
         meshRenderer.enabled = false;
 
         cell = cellParent;
-        state = States.Hidden;
+        visibilityState = States.Hidden;
     }
 
     private void Update()
     {
-        switch (state)
+        switch (visibilityState)
         {
             case States.Hidden:
                 break;
@@ -53,25 +53,25 @@ public class Tile : PlaceableObject {
 
     public void Show()
     {
-        if (state == States.Showing || state == States.Visible) return;
+        if (visibilityState == States.Showing || visibilityState == States.Visible) return;
 
         transitionTimer = 0f;
         meshRenderer.enabled = true;
-        state = States.Showing;
+        visibilityState = States.Showing;
     }
 
     public void Hide()
     {
-        if (state == States.Hidden || state == States.Hiding || state == States.ShowBeforeHiding) return;
+        if (visibilityState == States.Hidden || visibilityState == States.Hiding || visibilityState == States.ShowBeforeHiding) return;
 
-        if (state == States.Showing)
+        if (visibilityState == States.Showing)
         {
-            state = States.ShowBeforeHiding;
+            visibilityState = States.ShowBeforeHiding;
             return;
         }
-        else if (state == States.Visible)
+        else if (visibilityState == States.Visible)
         {
-            state = States.Hiding;
+            visibilityState = States.Hiding;
         }
 
         transitionTimer = 0f;
@@ -86,14 +86,14 @@ public class Tile : PlaceableObject {
 
         if (transitionTimer >= ShowDuration)
         {
-            if (state == States.ShowBeforeHiding)
+            if (visibilityState == States.ShowBeforeHiding)
             {
-                state = States.Visible;
+                visibilityState = States.Visible;
                 Hide();
             }
             else
             {
-                state = States.Visible;
+                visibilityState = States.Visible;
             }
         }
     }
@@ -109,7 +109,7 @@ public class Tile : PlaceableObject {
         if (transitionTimer >= HideDuration)
         {
             meshRenderer.enabled = false;
-            state = States.Hidden;
+            visibilityState = States.Hidden;
         }
     }
 }

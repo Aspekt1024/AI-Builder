@@ -1,20 +1,21 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class ObjectPlacer {
 
-    private PlaceableObject currentObject;
+    private PlaceableBehaviour currentObj;
     private Level levelScript;
 
     public ObjectPlacer()
     {
-        levelScript = Object.FindObjectOfType<Level>();
+        levelScript = UnityEngine.Object.FindObjectOfType<Level>();
     }
 
     public void Update()
     {
-        if (currentObject == null) return;
+        if (currentObj == null) return;
         
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit = new RaycastHit();
@@ -23,54 +24,54 @@ public class ObjectPlacer {
         if (hit.collider != null)
         {
             Vector3 snappedPosition = GridProperties.GetSnappedPosition(hit.point);
-            currentObject.transform.position = snappedPosition;
+            currentObj.Object.transform.position = snappedPosition;
         }
     }
 
-    public void SetCurrentObject(PlaceableObject obj)
+    public void SetCurrentObject(PlaceableBehaviour obj)
     {
-        currentObject = obj;
+        currentObj = obj;
     }
     
     public void ClearCurrentObject()
     {
-        currentObject = null;
+        currentObj = null;
     }
 
 
     public void PlaceObjectAndRetainSelection(Vector2 position)
     {
-        if (currentObject == null) return;
+        if (currentObj == null) return;
 
-        PlaceableObject originalObject = currentObject;
+        PlaceableBehaviour originalObject = currentObj;
         bool success = PlaceObject(position);
         
         if (success)
         {
-            currentObject = Object.Instantiate(originalObject);
-            currentObject.name = originalObject.name;
-            currentObject.transform.SetParent(originalObject.transform.parent);
+            currentObj = (PlaceableBehaviour)originalObject.GetType().GetConstructor(new Type[] { }).Invoke(new object[] { });
+            currentObj.Object.name = originalObject.Object.name;
+            currentObj.Object.transform.SetParent(originalObject.Object.transform.parent);
         }
     }
     
     public bool PlaceObject(Vector2 position)
     {
-        if (currentObject == null) return false;
+        if (currentObj == null) return false;
 
-        CellIndex tile = levelScript.Grid.GetCellIndex(currentObject.transform.position);
+        CellIndex tile = levelScript.Grid.GetCellIndex(currentObj.Object.transform.position);
         if (levelScript.Grid.CellIsEmpty(tile))
         {
-            if (currentObject.IsType<Wall>())
+            if (currentObj.IsType<Wall>())
             {
                 WallPlacer wallPlacer = new GameObject().AddComponent<WallPlacer>();
-                wallPlacer.PlaceWall((Wall)currentObject);
+                wallPlacer.PlaceWall((Wall)currentObj);
             }
             else
             {
-                levelScript.Grid.AddObjectToCell(currentObject, currentObject.transform.position);
+                levelScript.Grid.AddObjectToCell(currentObj, currentObj.Object.transform.position);
             }
 
-            currentObject = null;
+            currentObj = null;
             return true;
         }
         else
