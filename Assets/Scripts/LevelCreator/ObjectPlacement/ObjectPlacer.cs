@@ -6,10 +6,12 @@ public class ObjectPlacer {
 
     private PlaceableObject currentObject;
     private Level levelScript;
+    private WallPlacer wallPlacer;
 
     public ObjectPlacer()
     {
         levelScript = Object.FindObjectOfType<Level>();
+        wallPlacer = levelScript.gameObject.AddComponent<WallPlacer>();
     }
 
     public void Update()
@@ -29,6 +31,10 @@ public class ObjectPlacer {
 
     public void SetCurrentObject(PlaceableObject obj)
     {
+        if (currentObject != null)
+        {
+            Object.Destroy(currentObject.gameObject);
+        }
         currentObject = obj;
     }
     
@@ -62,7 +68,6 @@ public class ObjectPlacer {
         {
             if (currentObject.IsType<Wall>())
             {
-                WallPlacer wallPlacer = new GameObject().AddComponent<WallPlacer>();
                 wallPlacer.PlaceWall((Wall)currentObject);
             }
             else

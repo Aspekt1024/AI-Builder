@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class WallPlacer : MonoBehaviour {
-
-    private GameObject Wall0;
+    
     private GameObject Wall1;
     private GameObject Wall2Corner;
     private GameObject Wall2Straight;
@@ -13,10 +12,13 @@ public class WallPlacer : MonoBehaviour {
 
     private LevelGrid floor;
 
+    private Transform wallParent;
+
     private void Awake()
     {
         floor = FindObjectOfType<Level>().Grid;
-        Wall0 = Resources.Load<GameObject>("Prefabs/Walls/Wall_0");
+        wallParent = new GameObject("Walls").transform;
+
         Wall1 = Resources.Load<GameObject>("Prefabs/Walls/Wall_1");
         Wall2Corner = Resources.Load<GameObject>("Prefabs/Walls/Wall_2_corner");
         Wall2Straight = Resources.Load<GameObject>("Prefabs/Walls/Wall_2_straight");
@@ -46,6 +48,7 @@ public class WallPlacer : MonoBehaviour {
         }
         else
         {
+            obj.transform.SetParent(wallParent);
             floor.AddObjectToTile(obj, tile);
         }
 
@@ -120,7 +123,7 @@ public class WallPlacer : MonoBehaviour {
         }
 
         wall.transform.position = original.transform.position;
-        wall.transform.SetParent(original.transform.parent);
+        wall.transform.SetParent(wallParent);
 
         floor.AddObjectToCell(wall, wall.transform.position);
     }

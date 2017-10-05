@@ -8,7 +8,7 @@ public class Tile : PlaceableObject {
     private float transitionTimer;
     private const float ShowDuration = 0.4f;
     private const float HideDuration = 1f;
-
+    
     private MeshRenderer meshRenderer;
 
     private enum States

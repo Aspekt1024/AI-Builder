@@ -10,11 +10,11 @@ public class Level : MonoBehaviour {
     }
 
     private LevelGrid grid;
-    private int levelNum;
+    //private int levelNum;
     
 	private void Awake ()
     {
-        levelNum = 1;
+        //levelNum = 1;
         LoadGrid();
     }
     

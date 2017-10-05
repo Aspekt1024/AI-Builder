@@ -10,7 +10,7 @@ public class PlaceableObject : MonoBehaviour {
     {
         None, Placed, Held
     }
-    private States state;
+    private States levelCreatorState;
 
 #region lifecycle
 
@@ -27,12 +27,12 @@ public class PlaceableObject : MonoBehaviour {
     
     public void SetHeld()
     {
-        state = States.Held;
+        levelCreatorState = States.Held;
     }
 
     public void SetPlaced()
     {
-        state = States.Placed;
+        levelCreatorState = States.Placed;
     }
     
     public virtual void SetSize(float sizeRatio)

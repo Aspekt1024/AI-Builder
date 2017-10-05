@@ -79,7 +79,7 @@ public class ObjectButton : MonoBehaviour, IButton {
     private IEnumerator ShowFlash()
     {
         float targetAlpha = 0.45f;
-        while (flashImage.color.a < targetAlpha)
+        while (flashImage.color.a > targetAlpha)
         {
             float alpha = Mathf.Lerp(flashImage.color.a, targetAlpha, Time.deltaTime * 10f);
             flashImage.color = new Color(1f, 1f, 1f, alpha);
@@ -89,9 +89,9 @@ public class ObjectButton : MonoBehaviour, IButton {
 
     private IEnumerator FadeFlash()
     {
-        while (flashImage.color.a > 0.02f)
+        while (flashImage.color.a < 1f)
         {
-            float alpha = Mathf.Lerp(flashImage.color.a, 0f, Time.deltaTime * 5f);
+            float alpha = Mathf.Lerp(flashImage.color.a, 1f, Time.deltaTime * 5f);
             flashImage.color = new Color(1f, 1f, 1f, alpha);
             yield return null;
         }

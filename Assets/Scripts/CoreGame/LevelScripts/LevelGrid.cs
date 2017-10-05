@@ -23,7 +23,6 @@ public class LevelGrid {
 
     private void LoadCells()
     {
-        GameObject tilePrefab = Resources.Load<GameObject>("Prefabs/Tile");
         cells = new Cell[GridProperties.ROOM_ROWS, GridProperties.ROOM_COLS];
         
         for (int r = 0; r < GridProperties.ROOM_ROWS; r++)
