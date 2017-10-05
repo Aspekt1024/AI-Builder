@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public class Wall : PlaceableObject {
-
-    public string testStr;
-
-    protected override void Init()
+public class Wall : PlaceableBehaviour {
+    
+    protected override void CreateObject()
     {
-        testStr = "aslksa";
+        throw new System.NotImplementedException();
     }
 }

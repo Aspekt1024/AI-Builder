@@ -65,17 +65,17 @@ public class LevelGrid {
         }
     }
 
-    public void RemoveObjectFromCell(PlaceableObject obj, CellIndex tile)
+    public void RemoveObjectFromCell(PlaceableBehaviour obj, CellIndex tile)
     {
         cells[tile.Row, tile.Col].RemoveInhabitingObject(obj);
     }
 
-    public void AddObjectToCell(PlaceableObject obj, Vector3 position)
+    public void AddObjectToCell(PlaceableBehaviour obj, Vector3 position)
     {
         AddObjectToTile(obj, GetCellIndex(position));
     }
 
-    public void AddObjectToTile(PlaceableObject obj, CellIndex tile)
+    public void AddObjectToTile(PlaceableBehaviour obj, CellIndex tile)
     {
         cells[tile.Row, tile.Col].AddInhabitingObject(obj);
     }
