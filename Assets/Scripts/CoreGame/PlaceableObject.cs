@@ -6,12 +6,6 @@ public class PlaceableObject : MonoBehaviour {
 
     protected Vector3 originalScale;
     
-    private enum States
-    {
-        None, Placed, Held
-    }
-    private States levelCreatorState;
-
 #region lifecycle
 
     private void Awake()
@@ -24,16 +18,6 @@ public class PlaceableObject : MonoBehaviour {
     protected virtual void Init() { }
 
 #endregion
-    
-    public void SetHeld()
-    {
-        levelCreatorState = States.Held;
-    }
-
-    public void SetPlaced()
-    {
-        levelCreatorState = States.Placed;
-    }
     
     public virtual void SetSize(float sizeRatio)
     {

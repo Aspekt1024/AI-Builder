@@ -14,7 +14,7 @@ public class Cell
     private Tile tile;
 
     [SerializeField]
-    private bool isEnabled;
+    //private bool isEnabled;   // TODO use this to enable / disable tiles/cells to be loaded in the level
     private List<PlaceableObject> inhabitingObjects = new List<PlaceableObject>();
 
     private static GameObject tilePrefab;
@@ -24,8 +24,6 @@ public class Cell
 
     public void Init(int row, int col, LevelGrid grid)
     {
-        isEnabled = true;
-
         if (tilePrefab == null)
         {
             tilePrefab = Resources.Load<GameObject>("Prefabs/Tile");

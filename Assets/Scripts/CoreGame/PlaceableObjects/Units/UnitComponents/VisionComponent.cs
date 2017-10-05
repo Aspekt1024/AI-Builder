@@ -27,6 +27,7 @@ public class VisionComponent : MonoBehaviour, IVision {
         hasSelfVision = true;
         hasForwardVision = true;
         hasVisionMemory = false;
+        hasCrossVision = false;
         levelScanned = false;
         hasTotalVision = true;
 
