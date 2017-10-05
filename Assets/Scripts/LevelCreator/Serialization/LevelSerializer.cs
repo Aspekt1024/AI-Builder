@@ -28,7 +28,7 @@ public class LevelSerializer {
                     Cell = levelGrid.GetCell(row, col)
                 };
 
-                foreach (PlaceableObject obj in data.CellData[index].Cell.InhabitingObjects)
+                foreach (PlaceableBehaviour obj in data.CellData[index].Cell.InhabitingObjects)
                 {
                     //data.CellData[index].InhabitingObjects.Add(obj.GetType().ToString());
                     data.CellData[index].InhabitingObjects.Add("\"" + obj.GetType().ToString() + "\":" + JsonUtility.ToJson(obj));

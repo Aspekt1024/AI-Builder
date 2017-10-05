@@ -1,9 +1,9 @@
 ﻿using System;
 using UnityEngine;
 
-[Serializable]
 public class PlaceableObject : MonoBehaviour {
 
+    protected PlaceableBehaviour placeableBehaviour;
     protected Vector3 originalScale;
     
 #region lifecycle
@@ -11,11 +11,12 @@ public class PlaceableObject : MonoBehaviour {
     private void Awake()
     {
         originalScale = transform.localScale;
-
-        Init();
     }
 
-    protected virtual void Init() { }
+    public virtual void Init(PlaceableBehaviour behaviour)
+    {
+        placeableBehaviour = behaviour;
+    }
 
 #endregion
     

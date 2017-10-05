@@ -8,7 +8,7 @@ public class SelectableObject : PlaceableObject {
     protected MeshRenderer meshRenderer;
     protected Level levelScript;
     
-    protected override void Init()
+    public override void Init(PlaceableBehaviour placeable)
     {
         levelScript = FindObjectOfType<Level>();
         GetComponents();
